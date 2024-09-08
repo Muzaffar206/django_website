@@ -20,9 +20,116 @@
         </div>
     </div>
 
-    <nav>
-        <!-- Add your navigation menu here -->
-    </nav>
+    <header>
+        <div class="header-area">
+          <div class="main-header header-sticky">
+            <div class="container">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="menu-wrapper d-flex align-items-center justify-content-between">
+                    <div class="header-left d-flex align-items-center justify-content-between">
+                      <!-- Logo-->
+                      <div class="logo logo-large light-logo">
+                        <a href="{% url 'home' %}"><img src="{% static 'images/logo/logo.png' %}" alt="logo"></a>
+                      </div>
+                      <!-- Logo Mobile-->
+                      <div class="logo logo-mobile light-logo">
+                        <a href="{% url 'home' %}"><img src="{% static 'images/logo/logo.png' %}" alt="img"></a>
+                      </div>
+                    </div>
+      
+                    <div class="search-container">
+                      <input type="text" id="searchField" class="search-field" placeholder="Search...">
+                      <button id="closeSearch" class="close-search-btn"><i class="ri-close-line"></i></button>
+                    </div>
+      
+                    <!-- Main-menu for desktop -->
+                    <div class="main-menu d-none d-lg-block">
+                      <nav>
+                        <ul class="listing" id="navigation">
+                          <li class="single-list">
+                            <a href="{% url 'home' %}" class="single {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
+                          </li>
+                          <li class="single-list">
+                            <a href="{% url 'about' %}" class="single {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About<i class="ri-arrow-down-s-line"></i></a>
+                            <ul class="submenu">
+                              <li class="single-list"><a href="{% url 'about_glance' %}" class="single">MESCO At Glance</a></li>
+                              <li class="single-list"><a href="{% url 'managing_committee' %}" class="single">Managing Committee</a></li>
+                              <li class="single-list"><a href="{% url 'good_governance' %}" class="single">Good Governance</a></li>
+                              <li class="single-list">
+                                <a href="javascript:void(0)" class="single">Institute<i class="ri-arrow-right-s-line"></i></a>
+                                <ul class="submenu">
+                                  <li class="single-list"><a href="{% url 'mesco_education_society' %}" class="single">MESCO Education Society</a></li>
+                                  <li class="single-list"><a href="{% url 'angels_paradise_nursery' %}" class="single">Angels' Paradise Nursery Schools</a></li>
+                                  <li class="single-list"><a href="{% url 'vocational_training' %}" class="single">Vocational Training Center</a></li>
+                                  <li class="single-list"><a href="{% url 'ecce' %}" class="single">ECCE</a></li>
+                                </ul>
+                              </li>
+                            </ul>
+                          </li>
+                          <li class="single-list">
+                            <a href="{% url 'our_work' %}" class="single {% if request.resolver_match.url_name == 'our_work' %}active{% endif %}">Our Work<i class="ri-arrow-down-s-line"></i></a>
+                            <ul class="submenu">
+                              <li class="single-list"><a href="{% url 'educational_support' %}" class="single">Educational Support Programmes</a></li>
+                              <li class="single-list"><a href="{% url 'medical_aid' %}" class="single">Medical Aid</a></li>
+                              <li class="single-list"><a href="{% url 'clinics_dispensaries' %}" class="single">Clinics And Dispensaries</a></li>
+                              <li class="single-list"><a href="{% url 'school_adoption' %}" class="single">School Adoptions</a></li>
+                              <li class="single-list"><a href="{% url 'newspaper_units' %}" class="single">Old Newspaper Units</a></li>
+                            </ul>
+                          </li>
+                          <li class="single-list">
+                            <a href="{% url 'media' %}" class="single {% if request.resolver_match.url_name == 'media' %}active{% endif %}">Media<i class="ri-arrow-down-s-line"></i></a>
+                            <ul class="submenu">
+                              <li class="single-list"><a href="{% url 'in_media' %}" class="single">In Media</a></li>
+                              <li class="single-list"><a href="{% url 'image_gallery' %}" class="single">Image Gallery</a></li>
+                              <li class="single-list"><a href="{% url 'video_gallery' %}" class="single">Video Gallery</a></li>
+                              <li class="single-list"><a href="{% url 'newsletters' %}" class="single">Newsletters</a></li>
+                              <li class="single-list"><a href="{% url 'annual_reports' %}" class="single">Annual Reports</a></li>
+                              <li class="single-list"><a href="{% url 'success_stories' %}" class="single">Success Stories</a></li>
+                              <li class="single-list"><a href="{% url 'donor_testimonials' %}" class="single">Donor Testimonials Stories</a></li>
+                            </ul>
+                          </li>
+                          <li class="single-list">
+                            <a href="javascript:void(0)" class="single">Pages<i class="ri-arrow-down-s-line"></i></a>
+                            <ul class="submenu">
+                              <li class="single-list"><a href="{% url 'volunteer' %}" class="single">Volunteer</a></li>
+                              <li class="single-list"><a href="{% url 'donate' %}" class="single">Donate Pay</a></li>
+                              <li class="single-list">
+                                <a href="javascript:void(0)" class="single">Login<i class="ri-arrow-right-s-line"></i></a>
+                                <ul class="submenu">
+                                  <li class="single-list"><a href="{% url 'login' %}" class="single">Login</a></li>
+                                  <li class="single-list"><a href="{% url 'register' %}" class="single">Registration</a></li>
+                                </ul>
+                              </li>
+                              <li class="single-list"><a href="{% url 'faq' %}" class="single">FAQs</a></li>
+                              <li class="single-list"><a href="{% url 'privacy_policy' %}" class="single">Privacy Policy</a></li>
+                              <li class="single-list"><a href="{% url 'terms_conditions' %}" class="single">Terms & Conditions</a></li>
+                            </ul>
+                          </li>
+                          <li class="single-list"><a href="{% url 'contact' %}" class="single {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a></li>
+                        </ul>
+                      </nav>
+                    </div>
+      
+                    <div class="header-right">
+                      <div class="cart">
+                          <!-- search button -->
+                          <a href="javascript:void(0)" class="rounded-btn search-bar"><i class="ri-search-line"></i></a>
+                          <a href="{% url 'login' %}" class="btn-primary-fill pill-btn">Log in</a>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Mobile Menu -->
+                  <div class="div">
+                    <div class="mobile_menu d-block d-lg-none"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      
 
     <main>
         {% block content %}
@@ -30,8 +137,153 @@
     </main>
 
     <footer>
-        <!-- Add your footer content here -->
-    </footer>
+        <div class="footer-wrapper footer-bg-one">
+            <div class="container">
+                <div class="footer-menu">
+                    <div class="col-lg-12">
+                        <div class="menu-wrapper d-flex align-items-center justify-content-between">
+                            <div class="header-left d-flex align-items-center justify-content-between">
+                                <!-- Logo-->
+                                <div class="logo">
+                                    <a href="{% url 'home' %}"><img src="{% static 'images/logo/dark.png' %}" alt="logo"></a>
+                                </div>
+                            </div>
+                            <!-- Footer-menu -->
+                            <div class="main-menu d-none d-lg-block">
+                                <nav>
+                                    <ul class="listing" id="navigation2">
+                                        <li class="single-list"><a href="{% url 'home' %}" class="single">Home</a></li>
+                                        <li class="single-list"><a href="{% url 'donate' %}" class="single">Donate</a></li>
+                                        <li class="single-list"><a href="{% url 'about' %}" class="single">About</a></li>
+                                        <li class="single-list"><a href="{% url 'blog' %}" class="single">Blog</a></li>
+                                        <li class="single-list"><a href="{% url 'contact' %}" class="single">Contact</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <!-- Right button -->
+                            <ul class="cart">
+                                <li class="cart-list"><a href="{% url 'donate' %}" class="donate-btn">Donate</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <hr class="footer-line">
+                <div class="footer-imp-link row g-4 justify-content-between">
+                    <div class="col-xl-2 col-lg-6">
+                        <div class="footer-link">
+                            <h4 class="title">Explore Links</h4>
+                            <ul class="imp-link">
+                                <li class="single-list"><a class="single" href="javascript:void(0)">About Company</a></li>
+                                <li class="single-list"><a class="single" href="javascript:void(0)">Latest Projects</a></li>
+                                <li class="single-list"><a class="single" href="javascript:void(0)">Latest Blog</a></li>
+                                <li class="single-list"><a class="single" href="javascript:void(0)">Our Testimonials</a></li>
+                                <li class="single-list"><a class="single" href="javascript:void(0)">Our Mission</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-6">
+                        <div class="footer-link">
+                            <h4 class="title">Get Support</h4>
+                            <ul class="imp-link">
+                                <li class="single-list"><a class="single" href="javascript:void(0)">About</a></li>
+                                <li class="single-list"><a class="single" href="javascript:void(0)">How it Works</a></li>
+                                <li class="single-list"><a class="single" href="javascript:void(0)">Knowledge Hub</a></li>
+                                <li class="single-list"><a class="single" href="javascript:void(0)">Success Stories</a></li>
+                                <li class="single-list"><a class="single" href="javascript:void(0)">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-5">
+                        <div class="footer-link">
+                            <h4 class="title">Contact Info</h4>
+                            <ul class="imp-link">
+                                <li class="single-list">
+                                    <div class="d-flex align-items-center gap-10 mb-20">
+                                        <div class="imp-icon">
+                                            <i class="ri-mail-fill"></i>
+                                        </div>
+                                        <a class="single" href="mailto:donation@gmail.com">donation@gmail.com</a>
+                                    </div>
+                                </li>
+                                <li class="single-list">
+                                    <div class="d-flex align-items-center gap-10 mb-20">
+                                        <div class="imp-icon">
+                                            <i class="ri-phone-fill"></i>
+                                        </div>
+                                        <a class="single" href="tel:+88111222333">(+88) 111-222-333</a>
+                                    </div>
+                                </li>
+                                <li class="single-list">
+                                    <div class="d-flex align-items-center gap-10 mb-20">
+                                        <div class="imp-icon">
+                                            <i class="ri-map-pin-2-fill"></i>
+                                        </div>
+                                        <a class="single" href="javascript:void(0)">Tropical Cyclone, Volcano</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-6">
+                        <div class="footer-link">
+                            <h4 class="title">Projects</h4>
+                            <ul class="imp-link">
+                                <li class="single-list">
+                                    <div class="d-flex gap-20 mb-20 align-items-center">
+                                        <div class="project-img">
+                                            <a href="{% url 'donate' %}">
+                                                <img src="{% static 'images/gallery/project-1.png' %}" alt="image">
+                                            </a>
+                                        </div>
+                                        <div class="project-info">
+                                            <p class="project-date">12.Oct.2023</p>
+                                            <h4 class="project-title"><a href="{% url 'donate' %}">18 Best Charity Marketing Champions</a></h4>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="single-list">
+                                    <div class="d-flex gap-20">
+                                        <div class="project-img">
+                                            <a href="{% url 'donate' %}">
+                                                <img src="{% static 'images/gallery/project-2.png' %}" alt="image">
+                                            </a>
+                                        </div>
+                                        <div class="project-info">
+                                            <p class="project-date">20.Oct.2023</p>
+                                            <h4 class="project-title"><a href="{% url 'donate' %}">Charity starts from home. You Can't Even Help,</a></h4>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <hr class="footer-line">
+            </div>
+            <!-- footer-bottom area -->
+            <div class="footer-bottom-area">
+                <div class="container">
+                    <div class="footer-border">
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="footer-copy-right text-center">
+                                    <p class="pera">Copyright © 2023 initTheme. All rights reserved.</p>
+                                    <div class="footer-social-link">
+                                        <ul class="listing">
+                                            <li class="single-list"><a class="single" href="#"><i class="ri-facebook-fill"></i></a></li>
+                                            <li class="single-list"><a class="single" href="#"><i class="ri-youtube-fill"></i></a></li>
+                                            <li class="single-list"><a class="single" href="#"><i class="ri-instagram-line"></i></a></li>
+                                            <li class="single-list"><a class="single" href="#"><i class="ri-linkedin-fill"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>    
 
     <div class="progressParent" id="back-top">
         <svg class="backCircle svg-inner" width="100%" height="100%" viewBox="-1 -1 102 102">
