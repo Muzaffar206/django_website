@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My NGO Website{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Default description for My NGO Website{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}ngo, charity, non-profit{% endblock %}">
     {% load static %}
     <link rel="icon" type="image/x-icon" sizes="20x20" href="{% static '/images/icon/favicon.png' %}"/>
-  <link rel="stylesheet" type="text/css" href="{% static '/css/bootstrap-5.3.0.min.css' %}"/>
-  <link rel="stylesheet" type="text/css" href="{% static '/css/remixicon.css' %}" />
-  <link rel="stylesheet" type="text/css" href="{% static '/css/plugin.css' %}" />
-  <link rel="stylesheet" type="text/css" href="{% static '/css/main-style.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static '/css/bootstrap-5.3.0.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static '/css/remixicon.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static '/css/plugin.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static '/css/main-style.css' %}" />
 </head>
 <body>
     <div class="loading-page" id="preloader-active">

@@ -1,8 +1,34 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Welcome to Our NGO{% endblock %}
 
 {% block content %}
+    <!-- Slider Section -->
+    <div id="homeSlider" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for slider in sliders %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}" data-keywords="{{ slider.item_keywords }}">
+                    {% if slider.video_url %}
+                        <div class="embed-responsive embed-responsive-16by9" style="height: 720px;">
+                            <iframe class="embed-responsive-item" src="{{ slider.video_url }}" allowfullscreen style="width: 100%; height: 100%;" title="{{ slider.item_description }}"></iframe>
+                        </div>
+                    {% elif slider.image %}
+                        <img src="{{ slider.image.url }}" class="d-block w-100" alt="{{ slider.image_alt_text }}" style="height: 720px; object-fit: cover;">
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#homeSlider" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#homeSlider" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
     <h1>Welcome to Our NGO</h1>
     <p>This is the home page of our NGO website. Add your content here.</p>
 {% endblock %}

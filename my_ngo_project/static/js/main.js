@@ -291,25 +291,39 @@
       },
     ],
   });
-  function animateCount(element, target, duration) {
+  function animateCount(elementId, target, duration) {
+    const element = document.getElementById(elementId);
+    if (!element) {
+      console.warn(`Element with id '${elementId}' not found.`);
+      return;
+    }
+
     let start = 0;
     const increment = target / (duration / 16);
     const timer = setInterval(() => {
-        start += increment;
-        element.textContent = Math.floor(start).toLocaleString();
-        if (start >= target) {
-            clearInterval(timer);
-            element.textContent = target.toLocaleString();
-        }
+      start += increment;
+      element.textContent = Math.floor(start).toLocaleString();
+      if (start >= target) {
+        clearInterval(timer);
+        element.textContent = target.toLocaleString();
+      }
     }, 16);
-}
+  }
 
-document.addEventListener('DOMContentLoaded', () => {
-    animateCount(document.getElementById('scholarships'), 89052, 2000);
-    animateCount(document.getElementById('medical'), 12199, 2000);
-    animateCount(document.getElementById('clinics'), 833000, 2000);
-    animateCount(document.getElementById('sewing'), 2509, 2000);
-});
+  function initializeCounters() {
+    const counterData = [
+      { id: 'scholarships', target: 89052 },
+      { id: 'medical', target: 12199 },
+      { id: 'clinics', target: 833000 },
+      { id: 'sewing', target: 2509 }
+    ];
+
+    counterData.forEach(({ id, target }) => {
+      if (document.getElementById(id)) {
+        animateCount(id, target, 2000);
+      }
+    });
+  }
   /*----------------------------------------------
     slider - Blog Area-active
   ----------------------------------------------*/
@@ -385,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Slick Nav [ Mobile Menu ]
   -----------------------------------*/
   var slickNavInitialized = false;
-  $(document).ready(function () {
+  function initializeSlickNav() {
     if (!slickNavInitialized) {
       var menu = $("#navigation");
       if (menu.length) {
@@ -397,8 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
         slickNavInitialized = true;
       }
     }
-  });
-  
+  }
 
   /*-----------------------------------
     Search box
@@ -466,19 +479,19 @@ document.addEventListener('DOMContentLoaded', () => {
   /*-----------------------------------
     Password Show Hide
   -----------------------------------*/
-  $(document).ready(function () {
+  function initializePasswordToggle() {
     $(".toggle-password").click(function () {
-        var passwordInput = $($(this).siblings(".password-input"));
-        var icon = $(this);
-        if (passwordInput.attr("type") == "password") {
-            passwordInput.attr("type", "text");
-            icon.removeClass("ri-eye-line").addClass("ri-eye-off-line");
-        } else {
-            passwordInput.attr("type", "password");
-            icon.removeClass("ri-eye-off-line").addClass("ri-eye-line");
-        }
+      var passwordInput = $($(this).siblings(".password-input"));
+      var icon = $(this);
+      if (passwordInput.attr("type") == "password") {
+        passwordInput.attr("type", "text");
+        icon.removeClass("ri-eye-line").addClass("ri-eye-off-line");
+      } else {
+        passwordInput.attr("type", "password");
+        icon.removeClass("ri-eye-off-line").addClass("ri-eye-line");
+      }
     });
-  })
+  }
   
   /*-----------------------------------
     Play video
@@ -542,35 +555,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // Count pricing
-  $(document).ready(function(){
+  function initializePricing() {
     let price_right_parent = $('.priceListing');
     let left_default_amount = $('.left_default_amount').val();
-        price_right_parent.find('.total_donation_amount').text('$'+ left_default_amount);
+    price_right_parent.find('.total_donation_amount').text('$'+ left_default_amount);
 
-        $(document).on('click','.selectPricing li',function(){
-            let el = '$' + $(this).data('amount');
-            price_right_parent.find('.total_donation_amount').text(el);
-            $('.left_default_amount').val($(this).data('amount'))
-        });
+    $(document).on('click','.selectPricing li',function(){
+      let el = '$' + $(this).data('amount');
+      price_right_parent.find('.total_donation_amount').text(el);
+      $('.left_default_amount').val($(this).data('amount'))
+    });
 
     $(document).on('keyup','.left_default_amount ',function(){
-        let el = $(this).val();
-        price_right_parent.find('.total_donation_amount').text('$'+ el);
+      let el = $(this).val();
+      price_right_parent.find('.total_donation_amount').text('$'+ el);
     });
 
     $(document).on('click','.payment-gateway-list .single-gateway-item',function(){
-        $('#slected_gateway_from_helper').val($(this).data('gateway'))
+      $('#slected_gateway_from_helper').val($(this).data('gateway'))
 
-        let gateway = $(this).data('gateway');
+      let gateway = $(this).data('gateway');
 
-        if (gateway == 'manual_payment') {
-            $('.manual_payment_transaction_field').removeClass('d-none');
-        } else {
-            $('.manual_payment_transaction_field').addClass('d-none');
-        }
+      if (gateway == 'manual_payment') {
+        $('.manual_payment_transaction_field').removeClass('d-none');
+      } else {
+        $('.manual_payment_transaction_field').addClass('d-none');
+      }
     });
-  });
-  
+  }
+  // Function to call all initialization functions
+  function initializeAll() {
+    initializeSlickNav();
+    initializePasswordToggle();
+    initializePricing();
+    initializeCounters();  // Add this line
+  }
+
+  // Call the initializeAll function when the DOM is fully loaded
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeAll);
+  } else {
+    initializeAll();
+  }
     
 })(jQuery);
 
