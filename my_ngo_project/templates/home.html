@@ -142,13 +142,15 @@
         <div class="position-relative h-100">
           <div class="video-container">
             <img class="w-100" src="{{ about_us.image.url }}" alt="{{ about_us.title }}">
-            <button id="play-video" class="video-play-button">
-              <span></span>
-            </button>
+            {% if about_us.video_url %}
+              <button id="play-video" class="video-play-button">
+                <span></span>
+              </button>
+            {% endif %}
           </div>
           <div id="video-overlay" class="video-overlay">
             <div class="video-overlay-content">
-              <!-- Video will be inserted here -->
+              <iframe width="100%" height="100%" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
             <button id="close-video" class="close-video">&times;</button>
           </div>
@@ -160,23 +162,29 @@
 <!-- End-of About us Area -->
 
 
-{% endblock %}
+<!-- Add this for debugging -->
+<div style="display:none;" id="debug-video-url" data-url="{{ about_us.get_youtube_embed_url }}"></div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const playButton = document.getElementById('play-video');
   const videoOverlay = document.getElementById('video-overlay');
   const closeButton = document.getElementById('close-video');
-  const videoContent = document.querySelector('.video-overlay-content');
+  const videoContent = document.querySelector('.video-overlay-content iframe');
+  const videoUrl = "{{ about_us.video_url|escapejs }}";
 
-  playButton.addEventListener('click', function() {
-    videoContent.innerHTML = `{{ about_us.video_embed|safe|escapejs }}`;
-    videoOverlay.style.display = 'block';
-  });
+  if (playButton && videoOverlay && closeButton && videoContent) {
+    playButton.addEventListener('click', function() {
+      videoContent.src = videoUrl;
+      videoOverlay.classList.add('open');
+    });
 
-  closeButton.addEventListener('click', function() {
-    videoContent.innerHTML = '';
-    videoOverlay.style.display = 'none';
-  });
+    closeButton.addEventListener('click', function() {
+      videoContent.src = '';
+      videoOverlay.classList.remove('open');
+    });
+  }
 });
 </script>
+
+{% endblock %}

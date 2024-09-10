@@ -29,13 +29,7 @@ class SliderAdmin(admin.ModelAdmin):
 
 @admin.register(AboutUs)
 class AboutUsAdmin(admin.ModelAdmin):
-    list_display = ('title', 'subtitle')
-    fieldsets = (
-        (None, {
-            'fields': ('title', 'subtitle', 'content', 'donation_title', 'donation_content', 
-                       'volunteer_title', 'volunteer_content', 'image', 'video_embed')
-        }),
-        ('SEO', {
-            'fields': ('meta_title', 'meta_description'),
-        }),
-    )
+    fields = ['title', 'subtitle', 'content', 'donation_title', 'donation_content',
+              'volunteer_title', 'volunteer_content', 'image', 'video_url',
+              'meta_title', 'meta_description']
+    # Remove 'video_embed' from the list if it's present

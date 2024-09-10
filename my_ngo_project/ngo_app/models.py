@@ -3,6 +3,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 from ckeditor.fields import RichTextField
+from urllib.parse import urlparse, parse_qs
 
 def validate_image_size(image):
     if image and (image.width != 1280 or image.height != 720):
@@ -40,18 +41,31 @@ class Slider(models.Model):
 class AboutUs(models.Model):
     title = models.CharField(max_length=200)
     subtitle = models.CharField(max_length=200)
-    content = RichTextField()  # This allows for rich text editing
+    content = RichTextField()
     donation_title = models.CharField(max_length=100)
     donation_content = models.TextField()
     volunteer_title = models.CharField(max_length=100)
     volunteer_content = models.TextField()
     image = models.ImageField(upload_to='about_us/', help_text="Image should be 489x560 pixels")
-    video_url = models.URLField(blank=True, help_text="URL of the video")
-    video_embed = models.TextField(blank=True, help_text="Paste the embed code for the video here")
-
-    # SEO fields
+    video_url = models.URLField(blank=True, help_text="URL of the YouTube video (embed URL)")
     meta_title = models.CharField(max_length=60, blank=True, help_text="SEO Meta Title")
     meta_description = models.CharField(max_length=160, blank=True, help_text="SEO Meta Description")
+
+    def get_youtube_embed_url(self):
+        if not self.video_url:
+            return ''
+        
+        parsed_url = urlparse(self.video_url)
+        
+        if 'youtu.be' in parsed_url.netloc:
+            video_id = parsed_url.path.lstrip('/')
+            return f"https://www.youtube.com/embed/{video_id}"
+        elif 'youtube.com' in parsed_url.netloc:
+            query = parse_qs(parsed_url.query)
+            video_id = query.get('v', [''])[0]
+            return f"https://www.youtube.com/embed/{video_id}" if video_id else ''
+        else:
+            return ''
 
     def __str__(self):
         return self.title
