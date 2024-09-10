@@ -29,6 +29,154 @@
         </button>
     </div>
 
-    <h1>Welcome to Our NGO</h1>
-    <p>This is the home page of our NGO website. Add your content here.</p>
+ <section class="helpful-area-three section-padding">
+    <div class="container">
+      <div class="row g-24">
+        <div class="col-xl-3 col-md-6 col-lg-6">
+          <div class="helpful-card wow fadeInUp" data-wow-delay="0.0s">
+            <div class="helpful-card-icon">
+              <i class="ri-hand-coin-line"></i>
+            </div>
+            <div class="helpful-card-caption">
+              <h4 class="caption-title">Medical & Blood</h4>
+              <p class="caption-para">When deciding which charity to donate to, it important to do your research.</p>
+              <a href="javascript:void(0)" class="imp-link">Read More <i class="ri-arrow-right-up-line"></i></a>
+            </div>
+            <div class="number-watermark">
+              <h4 class="number">01</h4>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-6 col-lg-6">
+          <div class="helpful-card wow fadeInUp" data-wow-delay="0.10s">
+            <div class="helpful-card-icon">
+              <i class="ri-24-hours-line"></i>
+            </div>
+            <div class="helpful-card-caption">
+              <h4 class="caption-title">Social Service</h4>
+              <p class="caption-para">When deciding which charity to donate to, it important to do your research.</p>
+              <a href="javascript:void(0)" class="imp-link">Read More <i class="ri-arrow-right-up-line"></i></a>
+            </div>
+            <div class="number-watermark">
+              <h4 class="number">02</h4>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-6 col-lg-6">
+          <div class="helpful-card wow fadeInUp" data-wow-delay="0.20s">
+            <div class="helpful-card-icon">
+              <i class="ri-exchange-dollar-line"></i>
+            </div>
+            <div class="helpful-card-caption">
+              <h4 class="caption-title">Send a Charitable</h4>
+              <p class="caption-para">When deciding which charity to donate to, it important to do your research.</p>
+              <a href="javascript:void(0)" class="imp-link">Read More <i class="ri-arrow-right-up-line"></i></a>
+            </div>
+            <div class="number-watermark">
+              <h4 class="number">03</h4>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-6 col-lg-6">
+          <div class="helpful-card wow fadeInUp" data-wow-delay="0.03s">
+            <div class="helpful-card-icon">
+              <i class="ri-book-open-line"></i>
+            </div>
+            <div class="helpful-card-caption">
+              <h4 class="caption-title">Education</h4>
+              <p class="caption-para">When deciding which charity to donate to, it important to do your research.</p>
+              <a href="javascript:void(0)" class="imp-link">Read More <i class="ri-arrow-right-up-line"></i></a>
+            </div>
+            <div class="number-watermark">
+              <h4 class="number">04</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!-- About us Area Start -->
+<section class="about-area">
+  <div class="container">
+    <div class="row justify-content-between">
+      <div class="col-lg-6 my-auto">
+        <!-- Section Tittle -->
+        <div class="section-tittle mb-35">
+          <span class="sub-tittle text-capitalize font-600">About us</span>
+          <h2 class="title font-700 pb-15">{{ about_us.title }}</h2>
+          <p class="pera-subtitle mb-15">{{ about_us.subtitle }}</p>
+          <div class="pera-subtitle">{{ about_us.content|safe }}</div>
+        </div>
+        <div class="about-info">
+          <div class="row">
+            <div class="col-lg-10 mb-20">
+              <div class="d-flex gap-20">
+                <div class="info-icon">
+                  <i class="ri-hand-heart-line"></i>
+                </div>
+                <div class="info-content">
+                  <h4 class="title">{{ about_us.donation_title }}</h4>
+                  <p class="pera">{{ about_us.donation_content }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-10 mb-20">
+              <div class="d-flex gap-20">
+                <div class="info-icon">
+                  <i class="ri-user-line"></i>
+                </div>
+                <div class="info-content">
+                  <h4 class="title">{{ about_us.volunteer_title }}</h4>
+                  <p class="pera">{{ about_us.volunteer_content }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-10 mt-10">
+              <a href="{% url 'about' %}" class="btn btn-primary-fill">Read More</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="position-relative h-100">
+          <div class="video-container">
+            <img class="w-100" src="{{ about_us.image.url }}" alt="{{ about_us.title }}">
+            <button id="play-video" class="video-play-button">
+              <span></span>
+            </button>
+          </div>
+          <div id="video-overlay" class="video-overlay">
+            <div class="video-overlay-content">
+              <!-- Video will be inserted here -->
+            </div>
+            <button id="close-video" class="close-video">&times;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End-of About us Area -->
+
+
 {% endblock %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const playButton = document.getElementById('play-video');
+  const videoOverlay = document.getElementById('video-overlay');
+  const closeButton = document.getElementById('close-video');
+  const videoContent = document.querySelector('.video-overlay-content');
+
+  playButton.addEventListener('click', function() {
+    videoContent.innerHTML = `{{ about_us.video_embed|safe|escapejs }}`;
+    videoOverlay.style.display = 'block';
+  });
+
+  closeButton.addEventListener('click', function() {
+    videoContent.innerHTML = '';
+    videoOverlay.style.display = 'none';
+  });
+});
+</script>

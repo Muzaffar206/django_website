@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from .models import Slider
+from .models import Slider, AboutUs
 
 def home(request):
     sliders = Slider.objects.all()
-    return render(request, 'home.html', {'sliders': sliders})
+    about_us = AboutUs.objects.first()  # Assuming you'll have only one AboutUs instance
+    return render(request, 'home.html', {'sliders': sliders, 'about_us': about_us})
 
 # About Pages
 def about(request):

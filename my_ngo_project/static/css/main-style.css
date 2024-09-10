@@ -21857,52 +21857,62 @@ input[type=number] {
     opacity: 0;
   }
 }
-.video-overlay {
-  position: fixed;
-  z-index: -1;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.8);
-  opacity: 0;
-  -webkit-transition: all ease 500ms;
-  transition: all ease 500ms;
+.video-container {
+  position: relative;
 }
 
-.video-overlay.open {
-  position: fixed;
-  z-index: 9999;
-  opacity: 1;
-}
-
-.video-overlay-close {
-  position: absolute;
-  z-index: 9999;
-  top: 15px;
-  right: 20px;
-  font-size: 36px;
-  line-height: 1;
-  font-weight: 400;
-  color: var(--white);
-  text-decoration: none;
-  cursor: pointer;
-  -webkit-transition: all 200ms;
-  transition: all 200ms;
-}
-
-.video-overlay-close:hover {
-  color: var(--primary);
-}
-
-.video-overlay iframe {
+.video-play-button {
   position: absolute;
   top: 50%;
   left: 50%;
-  -webkit-transform: translateX(-50%) translateY(-50%);
-          transform: translateX(-50%) translateY(-50%);
-  -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.75);
-          box-shadow: 0 0 15px rgba(0, 0, 0, 0.75);
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+}
+
+.video-play-button:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 54%;
+  transform: translate(-50%, -50%);
+  border-style: solid;
+  border-width: 15px 0 15px 25px;
+  border-color: transparent transparent transparent white;
+}
+
+.video-overlay {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.video-overlay-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  height: 90%;
+}
+
+.close-video {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: white;
+  font-size: 30px;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 .donate-section-two .single-donate {
@@ -25564,3 +25574,4 @@ input[type=number] {
 .btn-primary:hover {
   background-color: #005c4c;
 }
+

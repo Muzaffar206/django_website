@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Slider
+from .models import Slider, AboutUs
 
 # Register your models here.
 
@@ -26,3 +26,16 @@ class SliderAdmin(admin.ModelAdmin):
     def has_video(self, obj):
         return bool(obj.video_url)
     has_video.boolean = True
+
+@admin.register(AboutUs)
+class AboutUsAdmin(admin.ModelAdmin):
+    list_display = ('title', 'subtitle')
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'subtitle', 'content', 'donation_title', 'donation_content', 
+                       'volunteer_title', 'volunteer_content', 'image', 'video_embed')
+        }),
+        ('SEO', {
+            'fields': ('meta_title', 'meta_description'),
+        }),
+    )
