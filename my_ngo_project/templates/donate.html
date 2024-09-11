@@ -1,0 +1,314 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Donate | MESCO{% endblock %}
+
+{% block content %}
+{% include 'breadcrumb.html' %}
+
+<div class="donation-form section-padding">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card-style box-shadow border-0">
+            <div class="card-body">
+              <div class="small-tittle mb-50">
+                <h2 class="title text-capitalize font-600 position-relative">Donation Form</h2>
+              </div>
+              <p>If you have already donated before, enter your Email ID or Mobile No. The remaining details will be filled automatically.</p>
+              
+              <form id="donationForm" method="post">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                  <label for="emailOrMobile" class="form-label">Enter Email / Mobile To Fill The Data</label>
+                  <input type="text" class="form-control" id="emailOrMobile" name="emailOrMobile">
+                  <button type="button" class="btn btn-secondary mt-2" id="fillDataBtn">Fill Data</button>
+                </div>
+  
+                <div class="mb-3">
+                  <label class="form-label">Zakat</label>
+                  <select class="form-select" name="zakat">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+  
+                <div class="mb-4">
+                  <h3 class="font-400 position-relative mb-2">Select Donation Options</h3>
+                  <ul class="selectPricing mb-20">
+                    <li class="listItem" data-amount="25000" data-purpose="EAS">RS.25,000 - Sponsor 1 child to Complete the Education After Std VII for 1 year.(EAS)</li>
+                    <li class="listItem" data-amount="8000" data-purpose="STVC">RS.8,000 - Sponsor 1 child to Complete their Technical Education for 1 year.(STVC)</li>
+                    <li class="listItem" data-amount="700" data-purpose="Per Dialysis Cost">RS. 700 - Sponsor 1 Dialysis Patient for Per Dialysis Cost</li>
+                    <li class="listItem" data-amount="50000" data-purpose="Higher Education">RS.50,000 - Sponsor 1 child to Complete the Higher Education for 1 year. (HCES)</li>
+                    <li class="listItem" data-amount="9000" data-purpose="Sewing Machine">RS.9,000 - Sponsor 1 Sewing Machine to Widow to become Self Sufficient</li>
+                    <li class="listItem" data-amount="8000" data-purpose="Education">RS.8,000 - Sponsor 1 child to Complete their Education for 1year. (EAID)</li>
+                    <li class="listItem" data-amount="28000" data-purpose="Dry Ration">RS.28,000 - Sponsor 1 Family for dry Ration for 1 year.</li>
+                    <li class="listItem" data-amount="15000" data-purpose="Monthly Medicines">RS.15,000 - Support 1 Patient for Monthly Medicines for chronic illness.(MA)</li>
+                    <li class="listItem" data-amount="30000" data-purpose="Life Saving Surgeries">RS. 30,000 - Support 1 Patient for Life Saving surgeries (LSMA)</li>
+                    <li class="listItem" data-amount="8400" data-purpose="Per Month Dialysis Cost">RS.8,400 - Sponsor 1 Dialysis Patient for Per month Dialysis Cost.</li>
+                    <li class="listItem" data-amount="500" data-purpose="Payroll Giving">RS.500 - Participate in Payroll giving programme per month.</li>
+                    <li class="listItem" data-amount="other" data-purpose="Other">Others</li>
+                  </ul>
+                  <input type="number" class="form-control mt-2" id="otherAmount" placeholder="Enter amount" style="display: none;">
+                </div>
+  
+                <div class="mb-3">
+                  <label for="amount" class="form-label">Total Amount</label>
+                  <input type="text" class="form-control" id="amount" name="amount" readonly>
+                </div>
+
+              <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" name="title">
+              </div>
+
+              <div class="mb-3">
+                <label for="surname" class="form-label">Surname</label>
+                <input type="text" class="form-control" id="surname" name="surname">
+              </div>
+
+              <div class="mb-3">
+                <label for="firstName" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="firstName" name="firstName">
+              </div>
+
+              <div class="mb-3">
+                <label for="middleName" class="form-label">Middle Name</label>
+                <input type="text" class="form-control" id="middleName" name="middleName">
+              </div>
+
+              <div class="mb-3">
+                <label for="panNo" class="form-label">PAN NO</label>
+                <input type="text" class="form-control" id="panNo" name="panNo">
+              </div>
+
+              <div class="mb-3">
+                <label for="email" class="form-label">Email ID</label>
+                <input type="email" class="form-control" id="email" name="email">
+              </div>
+
+              <div class="mb-3">
+                <label for="mobile" class="form-label">Mobile No</label>
+                <input type="tel" class="form-control" id="mobile" name="mobile">
+              </div>
+
+              <div class="mb-3">
+                <label for="dofficial" class="form-label">Dofficial</label>
+                <input type="text" class="form-control" id="dofficial" name="dofficial">
+              </div>
+
+              <div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                <textarea class="form-control" id="address" name="address" rows="3"></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label for="city" class="form-label">City</label>
+                <input type="text" class="form-control" id="city" name="city">
+              </div>
+
+              <div class="mb-3">
+                <label for="country" class="form-label">Country</label>
+                <input type="text" class="form-control" id="country" name="country">
+              </div>
+
+              <div class="mb-3">
+                <label for="state" class="form-label">State</label>
+                <input type="text" class="form-control" id="state" name="state">
+              </div>
+
+              <div class="mb-3">
+                <label for="pincode" class="form-label">Pincode</label>
+                <input type="text" class="form-control" id="pincode" name="pincode">
+              </div>
+
+              <div class="mb-3">
+                <label for="notes" class="form-label">Notes</label>
+                <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary">Donate Now</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="blog-section-two">
+          <div class="single-blog h-calc">
+            <div class="paymentDetails card-style box-shadow border-0 mb-24">
+              <div class="blog-info">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="blog-info-title">
+                    <h4 class="title text-capitalize">Selected Donations</h4>
+                    <div class="priceListing">
+                      <ul class="listing" id="selectedDonations">
+                        <!-- Selected donations will be displayed here -->
+                      </ul>
+                    </div>
+                    <div class="total-amount">
+                      <p class="leftCap font-600">Total Amount:</p>
+                      <p class="rightCap total_donation_amount font-600" id="totalAmount">RS. 0</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card mt-3">
+          <div class="card-body">
+            <p>Your Donation to MESCO Exempt Under Section 80G of Income Tax Act 1961.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const fillDataBtn = document.getElementById('fillDataBtn');
+      const emailOrMobileInput = document.getElementById('emailOrMobile');
+      const form = document.getElementById('donationForm');
+      const donationOptions = document.querySelectorAll('.selectPricing .listItem');
+      const otherAmountInput = document.getElementById('otherAmount');
+      const selectedDonationsUl = document.getElementById('selectedDonations');
+      const totalAmountSpan = document.getElementById('totalAmount');
+      const amountInput = document.getElementById('amount');
+    
+      fillDataBtn.addEventListener('click', function() {
+    const emailOrMobile = emailOrMobileInput.value;
+    // Simulated data fetch - replace with actual AJAX call
+    setTimeout(() => {
+      const userData = {
+        title: 'Mr.',
+        surname: 'Doe',
+        firstName: 'John',
+        middleName: '',
+        panNo: 'ABCDE1234F',
+        email: 'john.doe@example.com',
+        mobile: '1234567890',
+        dofficial: 'Manager',
+        address: '123 Main St',
+        city: 'Mumbai',
+        country: 'India',
+        state: 'Maharashtra',
+        pincode: '400001'
+      };
+
+      Object.keys(userData).forEach(key => {
+        const input = document.getElementById(key);
+        if (input) {
+          input.value = userData[key];
+        }
+      });
+    }, 1000);
+  });
+
+  function updateSelectedDonations() {
+    let total = 0;
+    let html = '';
+
+    donationOptions.forEach(option => {
+      if (option.classList.contains('selected') && option.dataset.amount !== 'other') {
+        const amount = parseInt(option.dataset.amount);
+        const purpose = option.dataset.purpose;
+        html += `<li class="listItem"><p class="leftCap">${purpose}</p><p class="rightCap">RS. ${amount}</p></li>`;
+        total += amount;
+      }
+    });
+
+    if (otherAmountInput.style.display !== 'none') {
+      const otherAmount = parseInt(otherAmountInput.value) || 0;
+      html += `<li class="listItem"><p class="leftCap">Other</p><p class="rightCap">RS. ${otherAmount}</p></li>`;
+      total += otherAmount;
+    }
+
+    selectedDonationsUl.innerHTML = html;
+    totalAmountSpan.textContent = `RS. ${total}`;
+    amountInput.value = `RS. ${total}`;
+  }
+
+  donationOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      if (this.dataset.amount === 'other') {
+        otherAmountInput.style.display = this.classList.contains('selected') ? 'none' : 'block';
+      }
+      this.classList.toggle('selected');
+      updateSelectedDonations();
+    });
+  });
+
+  otherAmountInput.addEventListener('input', updateSelectedDonations);
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    console.log('Form submitted');
+    const formData = new FormData(form);
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+  });
+});
+</script>
+
+<style>
+.selectPricing {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.selectPricing .listItem {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.selectPricing .listItem:hover {
+  background-color: #00715d;
+  color: white;
+}
+
+.selectPricing .listItem.selected {
+  background-color: #00715d;
+  color: white;
+}
+
+.priceListing .listing {
+  list-style: none;
+  padding: 0;
+}
+
+.priceListing .listItem {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.total-amount {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.btn-primary-submit {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.btn-primary-submit:hover {
+  background-color: #0056b3;
+}
+</style>
+{% endblock %}

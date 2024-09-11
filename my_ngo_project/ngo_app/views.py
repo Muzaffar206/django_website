@@ -39,7 +39,12 @@ def ecce(request):
 
 # Our Work Pages
 def our_work(request):
-    return render(request, 'our_work/our_work.html')
+    context = {
+        'current_page': 'Our Work',
+        'page_title': 'Our Projects',
+        # ... other context data ...
+    }
+    return render(request, 'our_work.html', context)
 
 def educational_support(request):
     return render(request, 'our_work/educational_support.html')
@@ -104,7 +109,11 @@ def volunteer(request):
     return render(request, 'volunteer.html')
 
 def donate(request):
-    return render(request, 'donate.html')
+    context = {
+        'current_page': 'Donation',
+        'page_title': 'Donate Now',
+    }
+    return render(request, 'donate.html', context)
 
 def blog(request):
     return render(request, 'blog.html')

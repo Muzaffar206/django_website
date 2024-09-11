@@ -1,0 +1,20 @@
+<!-- Breadcrumb Area Start -->
+<section class="breadcrumb-section breadcrumb-bg">
+    <div class="container">
+      <div class="breadcrumb-text">
+        <nav aria-label="breadcrumb" class="breadcrumb-nav wow fadeInUp" data-wow-delay="0.0s">
+          <ul class="breadcrumb listing">
+            <li class="breadcrumb-item single-list"><a href="{% url 'home' %}" class="single">Home</a></li>
+            {% if current_page %}
+              <li class="breadcrumb-item single-list"><a href="javascript:void(0)" class="single">{{ current_page }}</a></li>
+            {% endif %}
+            {% if third_level %}
+              <li class="breadcrumb-item single-list" aria-current="page"><a href="javascript:void(0)" class="single">{{ third_level }}</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+        <h1 class="title wow fadeInUp" data-wow-delay="0.1s">{{ page_title }}</h1>
+      </div>
+    </div>
+  </section>
+  <!-- End-of Breadcrumb Area -->
