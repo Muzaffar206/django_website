@@ -291,39 +291,7 @@
       },
     ],
   });
-  function animateCount(elementId, target, duration) {
-    const element = document.getElementById(elementId);
-    if (!element) {
-      console.warn(`Element with id '${elementId}' not found.`);
-      return;
-    }
 
-    let start = 0;
-    const increment = target / (duration / 16);
-    const timer = setInterval(() => {
-      start += increment;
-      element.textContent = Math.floor(start).toLocaleString();
-      if (start >= target) {
-        clearInterval(timer);
-        element.textContent = target.toLocaleString();
-      }
-    }, 16);
-  }
-
-  function initializeCounters() {
-    const counterData = [
-      { id: 'scholarships', target: 89052 },
-      { id: 'medical', target: 12199 },
-      { id: 'clinics', target: 833000 },
-      { id: 'sewing', target: 2509 }
-    ];
-
-    counterData.forEach(({ id, target }) => {
-      if (document.getElementById(id)) {
-        animateCount(id, target, 2000);
-      }
-    });
-  }
   /*----------------------------------------------
     slider - Blog Area-active
   ----------------------------------------------*/
@@ -583,12 +551,37 @@
       }
     });
   }
-  // Function to call all initialization functions
+
+  // Counter animation function
+  function animateValue(obj, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      obj.innerHTML = Math.floor(progress * (end - start) + start).toLocaleString();
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    window.requestAnimationFrame(step);
+  }
+
+  // Counter initialization function
+  function initializeCounters() {
+    const counters = document.querySelectorAll('.count');
+    counters.forEach(function(counter) {
+      const end = parseInt(counter.textContent.replace(/,/g, ''));
+      animateValue(counter, 0, end, 2000);
+    });
+  }
+
+  // Update the initializeAll function
   function initializeAll() {
     initializeSlickNav();
     initializePasswordToggle();
     initializePricing();
-    initializeCounters();  // Add this line
+    initializeVideoPlayer();
+    initializeCounters();
   }
 
   // Call the initializeAll function when the DOM is fully loaded
@@ -597,6 +590,6 @@
   } else {
     initializeAll();
   }
-    
+
 })(jQuery);
 

@@ -160,11 +160,6 @@
   </div>
 </section>
 <!-- End-of About us Area -->
-
-
-<!-- Add this for debugging -->
-<div style="display:none;" id="debug-video-url" data-url="{{ about_us.get_youtube_embed_url }}"></div>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const playButton = document.getElementById('play-video');
@@ -186,5 +181,33 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+
+<!-- Add this for debugging -->
+<div style="display:none;" id="debug-video-url" data-url="{{ about_us.get_youtube_embed_url }}"></div>
+
+<section class="hero-area">
+    <div class="schemesdata">
+        <div class="item scholarships">
+            <div class="icon">📚</div>
+            <div class="count" id="scholarships">{{ scheme_data.scholarships }}</div>
+            <div class="label">Educational Scholarships</div>
+        </div>
+        <div class="item medical">
+            <div class="icon">🏥</div>
+            <div class="count" id="medical">{{ scheme_data.medical_aid }}</div>
+            <div class="label">Medical Aid - Patients</div>
+        </div>
+        <div class="item clinics">
+            <div class="icon">🏥</div>
+            <div class="count" id="clinics">{{ scheme_data.clinics_cases }}</div>
+            <div class="label">Clinics & Dispensaries Cases</div>
+        </div>
+        <div class="item sewing">
+            <div class="icon">🧵</div>
+            <div class="count" id="sewing">{{ scheme_data.sewing_machines }}</div>
+            <div class="label">General Aid - Sewing Machines</div>
+        </div>
+    </div>
+</section>
 
 {% endblock %}

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Slider, AboutUs
+from .models import Slider, AboutUs, SchemeData
 
 # Register your models here.
 
@@ -33,3 +33,7 @@ class AboutUsAdmin(admin.ModelAdmin):
               'volunteer_title', 'volunteer_content', 'image', 'video_url',
               'meta_title', 'meta_description']
     # Remove 'video_embed' from the list if it's present
+
+@admin.register(SchemeData)
+class SchemeDataAdmin(admin.ModelAdmin):
+    list_display = ('scholarships', 'medical_aid', 'clinics_cases', 'sewing_machines')

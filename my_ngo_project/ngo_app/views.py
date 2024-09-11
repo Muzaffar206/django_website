@@ -1,12 +1,14 @@
 from django.shortcuts import render
-from .models import Slider, AboutUs
+from .models import Slider, AboutUs, SchemeData
 
 def home(request):
     sliders = Slider.objects.all()
     about_us = AboutUs.objects.first()
+    scheme_data = SchemeData.objects.first()
     return render(request, 'home.html', {
         'sliders': sliders,
         'about_us': about_us,
+        'scheme_data': scheme_data,
     })
 
 # About Pages

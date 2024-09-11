@@ -72,3 +72,12 @@ class AboutUs(models.Model):
 
     class Meta:
         verbose_name_plural = "About Us"
+
+class SchemeData(models.Model):
+    scholarships = models.IntegerField(default=0)
+    medical_aid = models.IntegerField(default=0)
+    clinics_cases = models.IntegerField(default=0)
+    sewing_machines = models.IntegerField(default=0)
+
+    def __str__(self):
+        return "Scheme Data"
