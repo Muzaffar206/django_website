@@ -42,7 +42,6 @@ def our_work(request):
     context = {
         'current_page': 'Our Work',
         'page_title': 'Our Projects',
-        # ... other context data ...
     }
     return render(request, 'our_work.html', context)
 
@@ -91,10 +90,18 @@ def contact(request):
     return render(request, 'contact.html')
 
 def login(request):
-    return render(request, 'login.html')
+    context = {
+        'current_page': 'Login',
+        'page_title': 'Login here',
+    }
+    return render(request, 'login.html', context)
 
 def register(request):
-    return render(request, 'register.html')
+    context = {
+        'current_page': 'Register',
+        'page_title': 'Register',
+    }
+    return render(request, 'register.html', context)
 
 def faq(request):
     return render(request, 'faq.html')
