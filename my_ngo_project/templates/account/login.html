@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load account socialaccount %}
+{% load static %}  <!-- Add this line -->
+
+{% block title %}Login | MESCO{% endblock %}
+
+{% block content %}
+{% include 'breadcrumb.html' %}
+<div class="login-area section-padding">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10">
+        <div class="login-card">
+          <!-- Logo -->
+          <div class="logo mb-40">
+            <a href="{% url 'home' %}" class="mb-30 d-block">
+              <img src="{% static 'images/logo/Logo-charitfix.png' %}" alt="logo" />
+            </a>
+          </div>
+          
+          <!-- Display error messages -->
+          {% if messages %}
+          <div class="alert alert-danger" role="alert">
+            {% for message in messages %}
+              {{ message }}
+            {% endfor %}
+          </div>
+          {% endif %}
+          
+          <!-- Form -->
+          <form method="POST" action="{% url 'account_login' %}">
+            {% csrf_token %}
+            <div class="contact-form mb-24">
+              <label class="contact-label">Email or Username</label>
+              <input
+                class="form-control contact-input"
+                type="text"
+                name="login"
+                placeholder="Enter Your Email or Username"
+                required
+              />
+            </div>
+            <div class="position-relative contact-form mb-24">
+              <label class="contact-label">Password</label>
+              <input
+                type="password"
+                class="form-control contact-input password-input"
+                name="password"
+                placeholder="Enter Password"
+                required
+              />
+              <i class="toggle-password ri-eye-line"></i>
+            </div>
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            <button type="submit" class="btn-primary-fill justify-content-center">
+              <span class="d-flex justify-content-center gap-6">
+                <span>{% trans "Sign In" %}</span>
+              </span>
+            </button>
+          </form>
+          
+          <div class="login-footer mb-20">
+            <div class="create-account">
+              <p>
+                {% trans "Don't have an account?" %}
+                <a href="{{ signup_url }}">
+                  <span>{% trans "Register" %}</span>
+                </a>
+              </p>
+            </div>
+          </div>
+
+          <div class="sign-with">
+            <p class="text-paragraph">{% trans "Or Sign in with" %}</p>
+            <ul class="icon-login-section">
+              {% get_providers as socialaccount_providers %}
+              {% for provider in socialaccount_providers %}
+                {% if provider.id == 'google' %}
+                  <li class="icon-login">
+                    <a href="{% provider_login_url provider.id process='login' scope='openid email profile' auth_params='{"prompt":"select_account"}' %}">
+                      <i class="ri-google-fill"></i>
+                    </a>
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

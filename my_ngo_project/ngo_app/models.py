@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
-from ckeditor.fields import RichTextField
+from django_ckeditor_5.fields import CKEditor5Field
 from urllib.parse import urlparse, parse_qs
 
 def validate_image_size(image):
@@ -41,7 +41,7 @@ class Slider(models.Model):
 class AboutUs(models.Model):
     title = models.CharField(max_length=200)
     subtitle = models.CharField(max_length=200)
-    content = RichTextField()
+    content = CKEditor5Field()
     donation_title = models.CharField(max_length=100)
     donation_content = models.TextField()
     volunteer_title = models.CharField(max_length=100)

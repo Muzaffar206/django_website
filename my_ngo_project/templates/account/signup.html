@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load account socialaccount %}
+{% load static %}
+
+{% block title %}Register | MESCO{% endblock %}
+
+{% block content %}
+{% include 'breadcrumb.html' %}
+<div class="login-area section-padding">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10">
+        <div class="login-card">
+          <!-- Logo -->
+          <div class="logo mb-40">
+            <a href="{% url 'home' %}" class="mb-30 d-block">
+              <img src="{% static 'images/logo/Logo-charitfix.png' %}" alt="logo" />
+            </a>
+          </div>
+          <!-- Form -->
+          <form method="POST" action="{% url 'account_signup' %}">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
+            <div class="contact-form mb-24">
+              <label class="contact-label">{% trans "First Name" %}</label>
+              <input
+                class="form-control contact-input {% if form.first_name.errors %}is-invalid{% endif %}"
+                type="text"
+                name="first_name"
+                placeholder="{% trans 'Enter Your First Name' %}"
+                value="{{ form.first_name.value|default:'' }}"
+                required
+              />
+              {% if form.first_name.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.first_name.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+            <div class="contact-form mb-24">
+              <label class="contact-label">{% trans "Last Name" %}</label>
+              <input
+                class="form-control contact-input {% if form.last_name.errors %}is-invalid{% endif %}"
+                type="text"
+                name="last_name"
+                placeholder="{% trans 'Enter Your Last Name' %}"
+                value="{{ form.last_name.value|default:'' }}"
+                required
+              />
+              {% if form.last_name.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.last_name.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+            <div class="contact-form mb-24">
+              <label class="contact-label">{% trans "Username" %}</label>
+              <input
+                class="form-control contact-input {% if form.username.errors %}is-invalid{% endif %}"
+                type="text"
+                name="username"
+                placeholder="{% trans 'Enter Your Username' %}"
+                value="{{ form.username.value|default:'' }}"
+                required
+              />
+              {% if form.username.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.username.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+            <div class="contact-form mb-24">
+              <label class="contact-label">{% trans "Email" %}</label>
+              <input
+                class="form-control contact-input {% if form.email.errors %}is-invalid{% endif %}"
+                type="email"
+                name="email"
+                placeholder="{% trans 'Enter Your Email' %}"
+                value="{{ form.email.value|default:'' }}"
+                required
+              />
+              {% if form.email.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.email.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+            <div class="position-relative contact-form mb-24">
+              <label class="contact-label">{% trans "Password" %}</label>
+              <input
+                type="password"
+                class="form-control contact-input password-input {% if form.password1.errors %}is-invalid{% endif %}"
+                name="password1"
+                placeholder="{% trans 'Enter Password' %}"
+                required
+              />
+              <i class="toggle-password ri-eye-line"></i>
+              {% if form.password1.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.password1.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+            <div class="position-relative contact-form mb-24">
+              <label class="contact-label">{% trans "Confirm Password" %}</label>
+              <input
+                type="password"
+                class="form-control contact-input password-input {% if form.password2.errors %}is-invalid{% endif %}"
+                name="password2"
+                placeholder="{% trans 'Confirm Password' %}"
+                required
+              />
+              <i class="toggle-password ri-eye-line"></i>
+              {% if form.password2.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.password2.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            <button type="submit" class="btn-primary-fill justify-content-center">
+              <span class="d-flex justify-content-center gap-6">
+                <span>{% trans "Register" %}</span>
+              </span>
+            </button>
+          </form>
+          
+          <div class="login-footer mb-20">
+            <div class="create-account">
+              <p>
+                {% trans "Already have an account?" %}
+                <a href="{{ login_url }}">
+                  <span>{% trans "Login" %}</span>
+                </a>
+              </p>
+            </div>
+          </div>
+
+          {% get_providers as socialaccount_providers %}
+          {% if socialaccount_providers %}
+          <div class="sign-with">
+            <p class="text-paragraph">{% trans "Or Sign up with" %}</p>
+            <ul class="icon-login-section">
+              {% for provider in socialaccount_providers %}
+              <li class="icon-login">
+                <a href="{% provider_login_url provider.id process='signup' %}">
+                  <i class="ri-{{ provider.id }}-fill"></i>
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
