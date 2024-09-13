@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login
 from allauth.account.views import SignupView
-from allauth.account.forms import SignupForm
+from .forms import CustomSignupForm  # Import from forms.py
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
@@ -133,17 +133,6 @@ def login(request):
         'page_title': 'Login here',
     }
     return render(request, 'login.html', context)
-
-class CustomSignupForm(SignupForm):
-    first_name = forms.CharField(max_length=30, label='First Name')
-    last_name = forms.CharField(max_length=30, label='Last Name')
-
-    def save(self, request):
-        user = super(CustomSignupForm, self).save(request)
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
-        user.save()
-        return user
 
 class CustomSignupView(SignupView):
     form_class = CustomSignupForm
