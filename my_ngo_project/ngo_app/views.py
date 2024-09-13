@@ -1,26 +1,11 @@
-from django import forms
 from django.shortcuts import render, redirect
 from .models import Slider, AboutUs, SchemeData
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login as auth_login
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib import messages
-from allauth.account.utils import send_email_confirmation
 from django.shortcuts import render, redirect
-from django.contrib import messages
 from django.contrib.auth import login
-from allauth.account.views import SignupView
-from .forms import CustomSignupForm  # Import from forms.py
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-from django.contrib.auth import get_user_model
-import random
-import logging
+from django.urls import reverse
 
-User = get_user_model()
 
-logger = logging.getLogger(__name__)
 
 def home(request):
     sliders = Slider.objects.all()
@@ -134,41 +119,8 @@ def login(request):
     }
     return render(request, 'login.html', context)
 
-class CustomSignupView(SignupView):
-    form_class = CustomSignupForm
-    template_name = 'account/signup.html'
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(self.request, 'Registration successful. Please check your email for verification.')
-        return response
 
-    def form_invalid(self, form):
-        response = super().form_invalid(form)
-        for field, errors in form.errors.items():
-            for error in errors:
-                messages.error(self.request, f"{field}: {error}")
-        return response
-
-def email_verification(request):
-    if request.method == 'POST':
-        entered_code = request.POST.get('verification_code')
-        stored_code = request.session.get('verification_code')
-        user_email = request.session.get('user_email')
-
-        if entered_code == stored_code:
-            user = User.objects.get(email=user_email)
-            user.is_active = True
-            user.save()
-            login(request, user)
-            messages.success(request, 'Your account has been successfully verified. You are now logged in.')
-            return redirect('home')
-        else:
-            messages.error(request, 'Invalid verification code. Please try again.')
-
-    return render(request, 'account/email_verification.html')
-
-@login_required
 def profile(request):
     return render(request, 'profile.html')
 
@@ -218,45 +170,3 @@ from django.contrib import messages
 
 # ... other imports and views ...
 
-def oauth2callback(request):
-    flow = Flow.from_client_secrets_file(
-        settings.GMAIL_CREDENTIALS_FILE, settings.GMAIL_SCOPES)
-    flow.redirect_uri = request.build_absolute_uri(reverse('oauth2callback'))
-
-    authorization_response = request.build_absolute_uri()
-    flow.fetch_token(authorization_response=authorization_response)
-
-    with open(settings.GMAIL_TOKEN_FILE, 'wb') as token:
-        pickle.dump(flow.credentials, token)
-
-    return redirect('home')  # or wherever you want to redirect after authentication
-
-def send_email_view(request):
-    if request.method == 'POST':
-        to = request.POST.get('to')
-        subject = request.POST.get('subject')
-        body = request.POST.get('body')
-
-        service = get_gmail_service(request)
-        if isinstance(service, redirect):
-            return service  # This is a redirect to the OAuth flow
-
-        if send_email(service, to, subject, body):
-            messages.success(request, 'Email sent successfully!')
-        else:
-            messages.error(request, 'Failed to send email.')
-
-    return render(request, 'send_email.html')
-
-def register(request):
-    if request.method == 'POST':
-        # Your existing registration logic here
-        # ...
-
-        # Remove email verification code
-        user = User.objects.create_user(username, email, password)
-        user.save()
-
-        return redirect('login')
-
-    return render(request, 'account/register.html')

@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load account socialaccount %}
 {% load static %}
 
 {% block title %}Register | MESCO{% endblock %}
@@ -157,20 +156,6 @@
             </div>
           </div>
 
-          {% get_providers as socialaccount_providers %}
-          {% if socialaccount_providers %}
-          <div class="sign-with">
-            <p class="text-paragraph">{% trans "Or Sign up with" %}</p>
-            <ul class="icon-login-section">
-              {% for provider in socialaccount_providers %}
-              <li class="icon-login">
-                <a href="{% provider_login_url provider.id process='signup' %}">
-                  <i class="ri-{{ provider.id }}-fill"></i>
-                </a>
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
           {% endif %}
         </div>
       </div>

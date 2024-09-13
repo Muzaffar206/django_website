@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% load account socialaccount %}
 {% load static %}  <!-- Add this line -->
 
 {% block title %}Login | MESCO{% endblock %}
@@ -52,9 +51,6 @@
               />
               <i class="toggle-password ri-eye-line"></i>
             </div>
-            {% if redirect_field_value %}
-            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-            {% endif %}
             <button type="submit" class="btn-primary-fill justify-content-center">
               <span class="d-flex justify-content-center gap-6">
                 <span>{% trans "Sign In" %}</span>
@@ -73,21 +69,7 @@
             </div>
           </div>
 
-          <div class="sign-with">
-            <p class="text-paragraph">{% trans "Or Sign in with" %}</p>
-            <ul class="icon-login-section">
-              {% get_providers as socialaccount_providers %}
-              {% for provider in socialaccount_providers %}
-                {% if provider.id == 'google' %}
-                  <li class="icon-login">
-                    <a href="{% provider_login_url provider.id process='login' scope='openid email profile' auth_params='{"prompt":"select_account"}' %}">
-                      <i class="ri-google-fill"></i>
-                    </a>
-                  </li>
-                {% endif %}
-              {% endfor %}
-            </ul>
-          </div>
+          
         </div>
       </div>
     </div>

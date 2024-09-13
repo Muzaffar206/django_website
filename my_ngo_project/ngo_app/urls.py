@@ -1,7 +1,5 @@
-from django.urls import path, include
+from django.urls import path
 from . import views
-from allauth.account.views import LoginView, SignupView
-from .views import CustomSignupView, email_verification
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -32,14 +30,9 @@ urlpatterns = [
     path('blog/', views.blog, name='blog'),
 
     path('contact/', views.contact, name='contact'),
-    path('login/', LoginView.as_view(), name='account_login'),
-    path('register/', CustomSignupView.as_view(), name='account_signup'),
     path('faq/', views.faq, name='faq'),
     path('terms-conditions/', views.terms_conditions, name='terms_conditions'),
     path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
     path('volunteer/', views.volunteer, name='volunteer'),
     path('donate/', views.donate, name='donate'),
-
-    path('accounts/', include('allauth.urls')),
-    path('accounts/signup/', CustomSignupView.as_view(), name='account_signup'),
 ]

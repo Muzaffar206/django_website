@@ -107,8 +107,8 @@
                               <li class="single-list">
                                 <a href="javascript:void(0)" class="single">Login<i class="ri-arrow-right-s-line"></i></a>
                                 <ul class="submenu">
-                                  <li class="single-list"><a href="{% url 'account_login' %}" class="single">Login</a></li>
-                                  <li class="single-list"><a href="{% url 'account_signup' %}" class="single">Registration</a></li>
+                                  <li class="single-list"><a href="{% url 'donate' %}" class="single">Login</a></li>
+                                  <li class="single-list"><a href="{% url 'donate' %}" class="single">Registration</a></li>
                                 </ul>
                               </li>
                               <li class="single-list"><a href="{% url 'faq' %}" class="single">FAQs</a></li>
@@ -131,10 +131,10 @@
                             </li>
                           {% else %}
                             <li class="single-list">
-                              <a href="{% url 'account_login' %}" class="single">Login</a>
+                              <a href="{% url 'contact' %}" class="single">Login</a>
                             </li>
                             <li class="single-list">
-                              <a href="{% url 'account_signup' %}" class="single">Sign Up</a>
+                              <a href="{% url 'contact' %}" class="single">Sign Up</a>
                             </li>
                           {% endif %}
                         </ul>
@@ -146,7 +146,7 @@
                           <!-- search button -->
                           <a href="javascript:void(0)" class="rounded-btn search-bar"><i class="ri-search-line"></i></a>
                           {% if not user.is_authenticated %}
-                            <a href="{% url 'account_login' %}" class="btn-primary-fill pill-btn">Log in</a>
+                            <a href="{% url 'contact' %}" class="btn-primary-fill pill-btn">Log in</a>
                           {% endif %}
                       </div>
                     </div>
