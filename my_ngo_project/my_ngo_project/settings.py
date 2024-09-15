@@ -192,3 +192,22 @@ LOGIN_REDIRECT_URL = '/'  # Change this to your home page URL if different
 ACCOUNT_FORMS = {
     'signup': 'ngo_app.forms.CustomSignupForm',
 }
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+# This will skip the "Sign In Via Google" intermediate page
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+ACCOUNT_PASSWORD_RESET_TIMEOUT = 3600  # 1 hour
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "Your Site "

@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from allauth.account.views import ConfirmEmailView
+from ngo_app.views import CustomPasswordResetView
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -41,4 +42,6 @@ urlpatterns = [
     path('accounts/signup/', views.custom_signup_view, name='account_signup'),
     path('accounts/logout/', views.custom_logout, name='account_logout'),
     path('accounts/confirm-email/<str:key>/', ConfirmEmailView.as_view(), name='account_confirm_email'),
+    path('accounts/password/reset/', CustomPasswordResetView.as_view(), name='account_reset_password'),
+  
 ]

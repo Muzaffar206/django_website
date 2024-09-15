@@ -82,13 +82,14 @@
               </p>
             </div>
             {% get_providers as socialaccount_providers %}
-            {% if socialaccount_providers %}
-            <a href="{% provider_login_url 'google' %}" class="login-btn d-flex align-items-center justify-content-center gap-10">
-              <img src="{% static 'images/icon/google-icon.png' %}" alt="Google icon" class="m-0">
-              <span>{% trans "Login with Google" %}</span>
-            </a>
-            {% include "socialaccount/snippets/login_extra.html" %}
-            {% endif %}
+            {% for provider in socialaccount_providers %}
+              {% if provider.id == "google" %}
+                <a href="{% provider_login_url provider.id process='login' scope=scope auth_params=auth_params %}" class="login-btn d-flex align-items-center justify-content-center gap-10">
+                  <img src="{% static 'images/icon/google-icon.png' %}" alt="Google icon" class="m-0">
+                  <span>{% trans "Login with Google" %}</span>
+                </a>
+              {% endif %}
+            {% endfor %}
           </div>
         </div>
       </div>

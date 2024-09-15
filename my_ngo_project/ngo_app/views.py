@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.urls import reverse
-from allauth.account.views import SignupView, LoginView, LogoutView
+from allauth.account.views import SignupView, LoginView, LogoutView, PasswordResetView
 from allauth.account.forms import SignupForm, LoginForm
 
 def home(request):
@@ -101,6 +101,12 @@ class CustomLoginView(LoginView):
         messages.success(self.request, 'You have successfully logged in.')
         return response
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['scope'] = ['profile', 'email']
+        context['auth_params'] = {'access_type': 'online'}
+        return context
+
 login = CustomLoginView.as_view()
 
 def profile(request):
@@ -154,9 +160,46 @@ def custom_logout(request):
     messages.success(request, 'You have been successfully logged out.')
     return redirect('home')  # or any other URL you prefer
 
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from google_auth_oauthlib.flow import Flow
-from django.conf import settings
-from django.contrib import messages
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
+from django.http import JsonResponse
+from allauth.account.views import PasswordResetView
+from django.urls import reverse_lazy
+from django.contrib.auth import get_user_model
 
+@method_decorator(csrf_protect, name='dispatch')
+class CustomPasswordResetView(PasswordResetView):
+    def get_users(self, email):
+        """Return the users with the given email address."""
+        User = get_user_model()
+        return User.objects.filter(email__iexact=email, is_active=True)
+
+    def form_valid(self, form):
+        email = form.cleaned_data["email"]
+        users = self.get_users(email)
+        
+        if not users.exists():
+            return JsonResponse({
+                'status': 'error',
+                'message': "Email doesn't exist.",
+            })
+
+        # Send the password reset email
+        form.save(request=self.request)
+
+        return JsonResponse({
+            'status': 'success',
+            'message': "Password reset e-mail has been sent successfully.",
+        })
+
+    def form_invalid(self, form):
+        errors = form.errors.as_text()
+        return JsonResponse({
+            'status': 'error',
+            'message': errors,
+        })
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['email'] = self.request.GET.get('email', '')  # Get email from query params
+        return context
