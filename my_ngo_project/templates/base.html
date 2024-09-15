@@ -124,7 +124,7 @@
                               </a>
                             </li>
                             <li class="single-list">
-                              <form id="logout-form" method="post" action="{% url 'account_logout' %}">
+                              <form id="logout-form" method="post" action="{% url 'contact' %}">
                                 {% csrf_token %}
                                 <a href="javascript:void(0)" onclick="document.getElementById('logout-form').submit();" class="single">Logout</a>
                               </form>

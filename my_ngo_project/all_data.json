@@ -1,0 +1,93 @@
+[
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$regQrzY3lyPy6C4leAsNNx$/q8lIQgN1jOpD6syJmApyAWzBI4h61CWGaqkMwuLee8=",
+    "last_login": "2024-09-15T12:29:26.699Z",
+    "is_superuser": true,
+    "username": "mescoadmin",
+    "first_name": "",
+    "last_name": "",
+    "email": "shaikhmuzaffar206@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2024-09-08T12:06:40.085Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 8,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$PsJpu6ArHt6W1ioFCyLRdo$mCYxKlfr3Hx7O1XRuLGpFQgqSRVOHez8JDrPcBSUSuU=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "",
+    "first_name": "Muzaffar",
+    "last_name": "Shaikh",
+    "email": "shaikhmuzaffar208@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-09-13T16:30:59.612Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "ngo_app.slider",
+  "pk": 1,
+  "fields": {
+    "title": "Hello",
+    "slug": "hello",
+    "image": "slider_images/main.jpg",
+    "video_url": null,
+    "position": 5,
+    "item_description": "hellow how",
+    "item_keywords": "hello how are",
+    "image_alt_text": "jhdsdkldfc"
+  }
+},
+{
+  "model": "ngo_app.slider",
+  "pk": 2,
+  "fields": {
+    "title": "blooo",
+    "slug": "blooo",
+    "image": "slider_images/main_SK6IDb6.jpg",
+    "video_url": "https://www.youtube.com/embed/G3fDgTwClGY",
+    "position": 2,
+    "item_description": "",
+    "item_keywords": "",
+    "image_alt_text": ""
+  }
+},
+{
+  "model": "ngo_app.aboutus",
+  "pk": 1,
+  "fields": {
+    "title": "Welcome to MESCO",
+    "subtitle": "Helping people live better tomorrow",
+    "content": "<p><strong>MESCO is a Secular Trust registered in 1968 with the Charity Commissioner of Mumbai. The organization is a selfless effort for serving mankind which began with a few friends who constituted the first Managing Committee. &#39;Education&#39; was identified as a core theme for human development by the organization and later it expanded to provide Medical Assistance and Poverty Relief.</strong></p>\r\n\r\n<p>The organization touches the lives of over 15,000 families annually through a combination of well strategized and implemented schemes, programs, activities and its institutions. The approach has always been to uphold ethical values in delivering and becoming a channel to deliver resources from those who want to give to those who need it the most. Trusted today by a large number of noble souls (individuals, families, foundations, charities and corporate) both in the country and abroad, the organization strives to bring happiness...</p>",
+    "donation_title": "Donation",
+    "donation_content": "Fund programs that help children escape poverty providing vocational training.",
+    "volunteer_title": "Volunteer",
+    "volunteer_content": "Fund programs that help children escape poverty providing vocational training.",
+    "image": "about_us/about-3.png",
+    "video_url": "https://www.youtube.com/embed/Um3hEk_9OVw",
+    "meta_title": "about-us meta",
+    "meta_description": "about-us description"
+  }
+},
+{
+  "model": "ngo_app.schemedata",
+  "pk": 1,
+  "fields": {
+    "scholarships": 6544,
+    "medical_aid": 441,
+    "clinics_cases": 55275,
+    "sewing_machines": 445
+  }
+}
+]
