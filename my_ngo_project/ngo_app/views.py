@@ -4,8 +4,8 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.urls import reverse
-
-
+from allauth.account.views import SignupView, LoginView, LogoutView
+from allauth.account.forms import SignupForm, LoginForm
 
 def home(request):
     sliders = Slider.objects.all()
@@ -95,31 +95,13 @@ def donor_testimonials(request):
 def contact(request):
     return render(request, 'contact.html')
 
-def login(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                auth_login(request, user)
-                return redirect('home')  # Replace 'home' with your home page URL name
-            else:
-                messages.error(request, "Invalid username or password.")
-        else:
-            messages.error(request, "Invalid username or password.")
-    else:
-        form = AuthenticationForm()
-    
-    context = {
-        'form': form,
-        'current_page': 'Login',
-        'page_title': 'Login here',
-    }
-    return render(request, 'login.html', context)
+class CustomLoginView(LoginView):
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'You have successfully logged in.')
+        return response
 
-
+login = CustomLoginView.as_view()
 
 def profile(request):
     return render(request, 'profile.html')
@@ -146,12 +128,22 @@ def donate(request):
 def blog(request):
     return render(request, 'blog.html')
 
-def custom_signup_view(request):
-    # Your signup logic here
-    # ...
-    # Override the email sending function
-    send_email_confirmation = lambda request, user, signup=False: None
-    # ...
+class CustomSignupView(SignupView):
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        if self.user.is_authenticated:
+            messages.success(self.request, 'Your account has been created. Please check your email to verify your account.')
+        return response
+
+custom_signup_view = CustomSignupView.as_view()
+
+class CustomLogoutView(LogoutView):
+    def post(self, *args, **kwargs):
+        response = super().post(*args, **kwargs)
+        messages.success(self.request, 'You have been successfully logged out.')
+        return response
+
+custom_logout = CustomLogoutView.as_view()
 
 from django.contrib.auth import logout
 from django.shortcuts import redirect
@@ -167,6 +159,4 @@ from django.urls import reverse
 from google_auth_oauthlib.flow import Flow
 from django.conf import settings
 from django.contrib import messages
-
-# ... other imports and views ...
 

@@ -1,11 +1,12 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load i18n %}
 {% load static %}
+{% load account socialaccount %}
 
-{% block title %}Register | MESCO{% endblock %}
+{% block head_title %}{% trans "Sign Up" %}{% endblock %}
 
 {% block content %}
-{% include 'breadcrumb.html' %}
+<!-- Login area Start -->
 <div class="login-area section-padding">
   <div class="container">
     <div class="row justify-content-center">
@@ -13,138 +14,79 @@
         <div class="login-card">
           <!-- Logo -->
           <div class="logo mb-40">
-            <a href="{% url 'home' %}" class="mb-30 d-block">
-              <img src="{% static 'images/logo/Logo-charitfix.png' %}" alt="logo" />
-            </a>
+            <a href="{% url 'home' %}" class="mb-30 d-block"><img src="{% static 'images/logo/Logo-charitfix.png' %}" alt="logo"></a>
           </div>
-          <!-- Form -->
-          <form method="POST" action="{% url 'account_signup' %}">
-            {% csrf_token %}
-            {% if form.non_field_errors %}
-              <div class="alert alert-danger">
-                {% for error in form.non_field_errors %}
-                  {{ error }}
+
+          <!-- Error Messages -->
+          {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+              {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                  <p>{{ error }}</p>
                 {% endfor %}
-              </div>
-            {% endif %}
-            <div class="contact-form mb-24">
-              <label class="contact-label">{% trans "First Name" %}</label>
-              <input
-                class="form-control contact-input {% if form.first_name.errors %}is-invalid{% endif %}"
-                type="text"
-                name="first_name"
-                placeholder="{% trans 'Enter Your First Name' %}"
-                value="{{ form.first_name.value|default:'' }}"
-                required
-              />
-              {% if form.first_name.errors %}
-                <div class="invalid-feedback">
-                  {% for error in form.first_name.errors %}
-                    {{ error }}
-                  {% endfor %}
-                </div>
-              {% endif %}
+              {% endfor %}
             </div>
+          {% endif %}
+
+          <!-- Form -->
+          <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+            {% csrf_token %}
             <div class="contact-form mb-24">
-              <label class="contact-label">{% trans "Last Name" %}</label>
-              <input
-                class="form-control contact-input {% if form.last_name.errors %}is-invalid{% endif %}"
-                type="text"
-                name="last_name"
-                placeholder="{% trans 'Enter Your Last Name' %}"
-                value="{{ form.last_name.value|default:'' }}"
-                required
-              />
-              {% if form.last_name.errors %}
-                <div class="invalid-feedback">
-                  {% for error in form.last_name.errors %}
-                    {{ error }}
-                  {% endfor %}
-                </div>
-              {% endif %}
-            </div>
-            <div class="contact-form mb-24">
-              <label class="contact-label">{% trans "Username" %}</label>
-              <input
-                class="form-control contact-input {% if form.username.errors %}is-invalid{% endif %}"
-                type="text"
-                name="username"
-                placeholder="{% trans 'Enter Your Username' %}"
-                value="{{ form.username.value|default:'' }}"
-                required
-              />
+              <label for="{{ form.username.id_for_label }}" class="contact-label">{% trans "Username" %}</label>
+              <input type="text" name="{{ form.username.html_name }}" class="form-control contact-input {% if form.username.errors %}is-invalid{% endif %}" id="{{ form.username.id_for_label }}" placeholder="{% trans 'Enter Your Username' %}" required>
               {% if form.username.errors %}
-                <div class="invalid-feedback">
-                  {% for error in form.username.errors %}
-                    {{ error }}
-                  {% endfor %}
-                </div>
+                <div class="invalid-feedback">{{ form.username.errors }}</div>
               {% endif %}
             </div>
             <div class="contact-form mb-24">
-              <label class="contact-label">{% trans "Email" %}</label>
-              <input
-                class="form-control contact-input {% if form.email.errors %}is-invalid{% endif %}"
-                type="email"
-                name="email"
-                placeholder="{% trans 'Enter Your Email' %}"
-                value="{{ form.email.value|default:'' }}"
-                required
-              />
+              <label for="{{ form.email.id_for_label }}" class="contact-label">{% trans "Email" %}</label>
+              <input type="email" name="{{ form.email.html_name }}" class="form-control contact-input {% if form.email.errors %}is-invalid{% endif %}" id="{{ form.email.id_for_label }}" placeholder="{% trans 'Enter Your Email' %}" required>
               {% if form.email.errors %}
-                <div class="invalid-feedback">
-                  {% for error in form.email.errors %}
-                    {{ error }}
-                  {% endfor %}
-                </div>
+                <div class="invalid-feedback">{{ form.email.errors }}</div>
               {% endif %}
             </div>
+
+            <!-- Password -->
             <div class="position-relative contact-form mb-24">
-              <label class="contact-label">{% trans "Password" %}</label>
-              <input
-                type="password"
-                class="form-control contact-input password-input {% if form.password1.errors %}is-invalid{% endif %}"
-                name="password1"
-                placeholder="{% trans 'Enter Password' %}"
-                required
-              />
+              <label for="{{ form.password1.id_for_label }}" class="contact-label">{% trans "Enter Password" %}</label>
+              <input type="password" name="{{ form.password1.html_name }}" class="form-control contact-input password-input {% if form.password1.errors %}is-invalid{% endif %}" id="{{ form.password1.id_for_label }}" placeholder="{% trans 'Enter Password' %}" required>
               <i class="toggle-password ri-eye-line"></i>
               {% if form.password1.errors %}
-                <div class="invalid-feedback">
-                  {% for error in form.password1.errors %}
-                    {{ error }}
-                  {% endfor %}
-                </div>
+                <div class="invalid-feedback">{{ form.password1.errors }}</div>
               {% endif %}
             </div>
+            <!-- Confirm Password -->
             <div class="position-relative contact-form mb-24">
-              <label class="contact-label">{% trans "Confirm Password" %}</label>
-              <input
-                type="password"
-                class="form-control contact-input password-input {% if form.password2.errors %}is-invalid{% endif %}"
-                name="password2"
-                placeholder="{% trans 'Confirm Password' %}"
-                required
-              />
+              <label for="{{ form.password2.id_for_label }}" class="contact-label">{% trans "Confirm Password" %}</label>
+              <input type="password" name="{{ form.password2.html_name }}" class="form-control contact-input password-input {% if form.password2.errors %}is-invalid{% endif %}" id="{{ form.password2.id_for_label }}" placeholder="{% trans 'Confirm Password' %}" required>
               <i class="toggle-password ri-eye-line"></i>
               {% if form.password2.errors %}
-                <div class="invalid-feedback">
-                  {% for error in form.password2.errors %}
-                    {{ error }}
-                  {% endfor %}
-                </div>
+                <div class="invalid-feedback">{{ form.password2.errors }}</div>
               {% endif %}
             </div>
+
+            <!-- Password Requirements -->
+            <div class="password-requirements mb-24">
+              <p class="text-muted">{% trans "Your password:" %}</p>
+              <ul class="text-muted">
+                <li>{% trans "Can't be too similar to your other personal information." %}</li>
+                <li>{% trans "Must contain at least 8 characters." %}</li>
+                <li>{% trans "Can't be a commonly used password." %}</li>
+                <li>{% trans "Can't be entirely numeric." %}</li>
+              </ul>
+            </div>
+
             {% if redirect_field_value %}
             <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
             {% endif %}
+
             <button type="submit" class="btn-primary-fill justify-content-center">
               <span class="d-flex justify-content-center gap-6">
-                <span>{% trans "Register" %}</span>
+                <span>{% trans "Sign Up" %}</span>
               </span>
             </button>
           </form>
-          
+
           <div class="login-footer mb-20">
             <div class="create-account">
               <p>
@@ -156,10 +98,37 @@
             </div>
           </div>
 
-          {% endif %}
+          <div class="login-footer">
+            {% get_providers as socialaccount_providers %}
+            {% if socialaccount_providers %}
+            <a href="{% provider_login_url 'google' %}" class="login-btn d-flex align-items-center justify-content-center gap-10">
+              <img src="{% static 'images/icon/google-icon.png' %}" alt="Google icon" class="m-0">
+              <span>{% trans "Login with Google" %}</span>
+            </a>
+            {% include "socialaccount/snippets/login_extra.html" %}
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+<!-- End-of Login -->
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const togglePasswords = document.querySelectorAll('.toggle-password');
+  togglePasswords.forEach(toggle => {
+    toggle.addEventListener('click', function() {
+      const input = this.previousElementSibling;
+      const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+      input.setAttribute('type', type);
+      this.classList.toggle('ri-eye-line');
+      this.classList.toggle('ri-eye-off-line');
+    });
+  });
+});
+</script>
 {% endblock %}

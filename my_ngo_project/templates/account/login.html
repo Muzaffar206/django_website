@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% load static %}  <!-- Add this line -->
+{% load account socialaccount %}
+{% load static %}
 
-{% block title %}Login | MESCO{% endblock %}
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
 
 {% block content %}
-{% include 'breadcrumb.html' %}
+<!-- Login area Start -->
 <div class="login-area section-padding">
   <div class="container">
     <div class="row justify-content-center">
@@ -13,67 +14,87 @@
         <div class="login-card">
           <!-- Logo -->
           <div class="logo mb-40">
-            <a href="{% url 'home' %}" class="mb-30 d-block">
-              <img src="{% static 'images/logo/Logo-charitfix.png' %}" alt="logo" />
-            </a>
+            <a href="{% url 'home' %}" class="mb-30 d-block"><img src="{% static 'images/logo/Logo-charitfix.png' %}" alt="logo"></a>
           </div>
           
-          <!-- Display error messages -->
-          {% if messages %}
-          <div class="alert alert-danger" role="alert">
-            {% for message in messages %}
-              {{ message }}
-            {% endfor %}
-          </div>
+          <!-- Error Messages -->
+          {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+              {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                  <p>{{ error }}</p>
+                {% endfor %}
+              {% endfor %}
+            </div>
           {% endif %}
-          
+
           <!-- Form -->
-          <form method="POST" action="{% url 'account_login' %}">
+          <form class="login" method="POST" action="{% url 'account_login' %}">
             {% csrf_token %}
-            <div class="contact-form mb-24">
-              <label class="contact-label">Email or Username</label>
-              <input
-                class="form-control contact-input"
-                type="text"
-                name="login"
-                placeholder="Enter Your Email or Username"
-                required
-              />
-            </div>
             <div class="position-relative contact-form mb-24">
-              <label class="contact-label">Password</label>
-              <input
-                type="password"
-                class="form-control contact-input password-input"
-                name="password"
-                placeholder="Enter Password"
-                required
-              />
-              <i class="toggle-password ri-eye-line"></i>
+              <label for="id_login" class="contact-label">{% trans "Username or Email" %}</label>
+              <input type="text" name="login" placeholder="{% trans 'Username or Email' %}" autocomplete="username" required id="id_login" class="form-control contact-input {% if form.login.errors %}is-invalid{% endif %}">
+              {% if form.login.errors %}
+                <div class="invalid-feedback">
+                  {% for error in form.login.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
             </div>
-            <button type="submit" class="btn-primary-fill justify-content-center">
+
+            <div class="contact-form mb-24">
+              <div class="position-relative">
+                <div class="d-flex justify-content-between align-items-center">
+                  <label for="id_password" class="contact-label">{% trans "Password" %}</label>
+                  <a href="{% url 'account_reset_password' %}"><span class="text-primary text-15">{% trans "Forgot Password?" %}</span></a>
+                </div>
+                <input type="password" name="password" placeholder="{% trans 'Password' %}" required id="id_password" class="form-control contact-input password-input {% if form.password.errors %}is-invalid{% endif %}">
+                <i class="toggle-password ri-eye-line"></i>
+                {% if form.password.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.password.errors %}
+                      {{ error }}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+
+            <button class="btn-primary-fill justify-content-center" type="submit">
               <span class="d-flex justify-content-center gap-6">
                 <span>{% trans "Sign In" %}</span>
               </span>
             </button>
           </form>
-          
-          <div class="login-footer mb-20">
+
+          <div class="login-footer">
             <div class="create-account">
               <p>
                 {% trans "Don't have an account?" %}
                 <a href="{{ signup_url }}">
-                  <span>{% trans "Register" %}</span>
+                  <span>{% trans "Sign Up" %}</span>
                 </a>
               </p>
             </div>
+            {% get_providers as socialaccount_providers %}
+            {% if socialaccount_providers %}
+            <a href="{% provider_login_url 'google' %}" class="login-btn d-flex align-items-center justify-content-center gap-10">
+              <img src="{% static 'images/icon/google-icon.png' %}" alt="Google icon" class="m-0">
+              <span>{% trans "Login with Google" %}</span>
+            </a>
+            {% include "socialaccount/snippets/login_extra.html" %}
+            {% endif %}
           </div>
-
-          
         </div>
       </div>
     </div>
   </div>
 </div>
+<!-- End-of Login -->
 {% endblock %}
 

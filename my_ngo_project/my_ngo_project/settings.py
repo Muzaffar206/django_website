@@ -44,6 +44,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ngo_app',
     'django_ckeditor_5',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
@@ -54,7 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'my_ngo_project.urls'
@@ -147,13 +152,13 @@ CKEDITOR_CONFIGS = {
     },
 }
 
-# Remove these configurations:
-# SITE_ID = 1
-# ACCOUNT_EMAIL_REQUIRED = True
-# ACCOUNT_USERNAME_REQUIRED = False
-# ACCOUNT_AUTHENTICATION_METHOD = 'email'
-# ACCOUNT_EMAIL_VERIFICATION = 'optional'
-# SOCIALACCOUNT_PROVIDERS = { ... }
+SITE_ID = 1
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_ADAPTER = 'ngo_app.adapters.CustomAccountAdapter'
+SOCIALACCOUNT_ADAPTER = 'ngo_app.adapters.CustomSocialAccountAdapter'
 
 # CKEditor 5 settings
 CKEDITOR_5_CONFIGS = {
@@ -171,13 +176,13 @@ CKEDITOR_5_UPLOAD_PATH = "uploads/"
 ACCOUNT_SIGNUP_TEMPLATE = 'account/signup.html'
 ACCOUNT_LOGIN_TEMPLATE = 'account/login.html'
 
-# Email settings for local SMTP server
+# Email settings (update these with your actual email configuration)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  # or your email provider
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'shaikhmuzaffar208@gmail.com'  # Your email
-EMAIL_HOST_PASSWORD = 'ocwr tvvu vazs mfes'  # Your email password
+EMAIL_HOST_PASSWORD = 'vfbh pnat kqnt arng'  # Your email password
 DEFAULT_FROM_EMAIL = 'shaikhmuzaffar208@gmail.com'  # Default from email
 
 # Redirect to home page after successful login

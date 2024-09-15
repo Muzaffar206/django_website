@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from allauth.account.views import ConfirmEmailView
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -35,4 +36,9 @@ urlpatterns = [
     path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
     path('volunteer/', views.volunteer, name='volunteer'),
     path('donate/', views.donate, name='donate'),
+
+    path('accounts/login/', views.login, name='account_login'),
+    path('accounts/signup/', views.custom_signup_view, name='account_signup'),
+    path('accounts/logout/', views.custom_logout, name='account_logout'),
+    path('accounts/confirm-email/<str:key>/', ConfirmEmailView.as_view(), name='account_confirm_email'),
 ]
