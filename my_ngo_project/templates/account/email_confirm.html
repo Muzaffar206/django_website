@@ -2,29 +2,54 @@
 
 {% load i18n %}
 {% load account %}
+{% load static %}
 
 {% block head_title %}{% trans "Confirm E-mail Address" %}{% endblock %}
 
 {% block content %}
-<h1>{% trans "Confirm E-mail Address" %}</h1>
+<!-- Email Confirmation area Start -->
+<div class="login-area section-padding" style="padding: 10px;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10">
+        <div class="login-card">
+          <!-- Logo -->
+          <div class="logo mb-40">
+            <a href="{% url 'home' %}" class="mb-30 d-block"><img src="{% static 'images/logo/Logo-charitfix.png' %}" alt="logo"></a>
+          </div>
 
-{% if confirmation %}
+          <h1 class="text-center mb-4">{% trans "Confirm E-mail Address" %}</h1>
 
-{% user_display confirmation.email_address.user as user_display %}
+          {% if confirmation %}
 
-<p>{% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</p>
+            {% user_display confirmation.email_address.user as user_display %}
 
-<form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
-{% csrf_token %}
-    <button type="submit">{% trans 'Confirm' %}</button>
-</form>
+            <p class="mb-4">{% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</p>
 
-{% else %}
+            <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+            {% csrf_token %}
+              <button type="submit" class="btn-primary-fill justify-content-center w-100">
+                <span class="d-flex justify-content-center gap-6">
+                  <span>{% trans 'Confirm' %}</span>
+                </span>
+              </button>
+            </form>
 
-{% url 'account_email' as email_url %}
+          {% else %}
 
-<p>{% blocktrans %}This e-mail confirmation link expired or is invalid. Please <a href="{{ email_url }}">issue a new e-mail confirmation request</a>.{% endblocktrans %}</p>
+            {% url 'account_email' as email_url %}
 
-{% endif %}
+            <p class="mb-4">{% blocktrans %}This e-mail confirmation link expired or is invalid. Please <a href="{{ email_url }}">issue a new e-mail confirmation request</a>.{% endblocktrans %}</p>
 
+          {% endif %}
+
+          <div class="login-footer mt-4">
+            <p class="text-center">{% blocktrans %}If you have any issues confirming your email, please contact our support team.{% endblocktrans %}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End of Email Confirmation -->
 {% endblock %}

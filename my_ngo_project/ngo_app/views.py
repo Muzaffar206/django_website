@@ -6,6 +6,7 @@ from django.contrib.auth import login
 from django.urls import reverse
 from allauth.account.views import SignupView, LoginView, LogoutView, PasswordResetView
 from allauth.account.forms import SignupForm, LoginForm
+from allauth.account.views import EmailVerificationSentView
 
 def home(request):
     sliders = Slider.objects.all()
@@ -203,3 +204,6 @@ class CustomPasswordResetView(PasswordResetView):
         context = super().get_context_data(**kwargs)
         context['email'] = self.request.GET.get('email', '')  # Get email from query params
         return context
+
+class CustomConfirmEmailView(EmailVerificationSentView):
+    template_name = 'account/verification_sent.html'

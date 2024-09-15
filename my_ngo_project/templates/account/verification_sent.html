@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load account %}
+{% load static %}
+
+{% block head_title %}{% trans "Verify Your E-mail Address" %}{% endblock %}
+
+{% block content %}
+<!-- Email Verification Sent area Start -->
+<div class="login-area section-padding" style="padding: 10px;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10">
+        <div class="login-card">
+          <!-- Logo -->
+          <div class="logo mb-40">
+            <a href="{% url 'home' %}" class="mb-30 d-block"><img src="{% static 'images/logo/Logo-charitfix.png' %}" alt="logo"></a>
+          </div>
+
+          <h1 class="text-center mb-4">{% trans "Verify Your E-mail Address" %}</h1>
+
+          <p class="mb-4">{% blocktrans %}We have sent an e-mail to you for verification. Follow the link provided to finalize the signup process. If you do not see the verification e-mail in your main inbox, check your spam folder. Please contact us if you do not receive the verification e-mail within a few minutes.{% endblocktrans %}</p>
+
+          <div class="login-footer mt-4">
+            <p class="text-center">{% blocktrans %}If you have any issues verifying your email, please contact our support team.{% endblocktrans %}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End of Email Verification Sent -->
+{% endblock %}
