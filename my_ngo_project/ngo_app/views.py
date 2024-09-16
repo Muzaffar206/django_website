@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Slider, AboutUs, SchemeData
+from .models import Slider, AboutUs, SchemeData, Donor, Donation
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
@@ -7,6 +7,8 @@ from django.urls import reverse
 from allauth.account.views import SignupView, LoginView, LogoutView, PasswordResetView
 from allauth.account.forms import SignupForm, LoginForm
 from allauth.account.views import EmailVerificationSentView
+from django.contrib.auth.decorators import login_required
+from .forms import DonationForm
 
 def home(request):
     sliders = Slider.objects.all()
@@ -21,6 +23,9 @@ def home(request):
 # About Pages
 def about(request):
     return render(request, 'about/about.html')
+
+def blog(request):
+    return render(request, 'blog.html')
 
 def about_glance(request):
     return render(request, 'about/mesco_at_glance.html')
@@ -126,14 +131,58 @@ def volunteer(request):
     return render(request, 'volunteer.html')
 
 def donate(request):
-    context = {
-        'current_page': 'Donation',
-        'page_title': 'Donate Now',
-    }
-    return render(request, 'donate.html', context)
+    if request.method == 'POST':
+        form = DonationForm(request.POST)
+        if form.is_valid():
+            try:
+                email = form.cleaned_data['email']
+                mobile = form.cleaned_data['mobile']
+                
+                donor, created = Donor.objects.update_or_create(
+                    email=email,
+                    mobile=mobile,
+                    defaults={
+                        'surname': form.cleaned_data['surname'],
+                        'first_name': form.cleaned_data['first_name'],
+                        'middle_name': form.cleaned_data['middle_name'],
+                        'pan_no': form.cleaned_data['pan_no'],
+                        'dofficial': form.cleaned_data['dofficial'],
+                        'address': form.cleaned_data['address'],
+                        'city': form.cleaned_data['city'],
+                        'country': form.cleaned_data['country'],
+                        'state': form.cleaned_data['state'],
+                        'pincode': form.cleaned_data['pincode'],
+                    }
+                )
+                
+                if request.user.is_authenticated and not donor.user:
+                    donor.user = request.user
+                    donor.save()
+                
+                donation = Donation.objects.create(
+                    donor=donor,
+                    amount=form.cleaned_data['amount'],
+                    purpose=form.cleaned_data['purpose'],
+                    is_zakat=form.cleaned_data['is_zakat'],
+                    notes=form.cleaned_data['notes']
+                )
+                messages.success(request, 'Thank you for your donation!')
+                return redirect('donation_success')
+            except Exception as e:
+                print(f"Error saving donation: {str(e)}")
+                messages.error(request, 'An error occurred while processing your donation. Please try again.')
+        else:
+            print(form.errors)
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+    else:
+        form = DonationForm()
+    
+    return render(request, 'donate.html', {'form': form})
 
-def blog(request):
-    return render(request, 'blog.html')
+def donation_success(request):
+    return render(request, 'donation_success.html')
 
 class CustomSignupView(SignupView):
     def form_valid(self, form):
@@ -207,3 +256,35 @@ class CustomPasswordResetView(PasswordResetView):
 
 class CustomConfirmEmailView(EmailVerificationSentView):
     template_name = 'account/verification_sent.html'
+
+from django.http import JsonResponse
+from .models import Donor
+
+def donor_data_api(request):
+    identifier = request.GET.get('identifier')
+    try:
+        donor = Donor.objects.get(email=identifier)
+    except Donor.DoesNotExist:
+        try:
+            donor = Donor.objects.get(mobile=identifier)
+        except Donor.DoesNotExist:
+            return JsonResponse({'success': False})
+    
+    donor_data = {
+        'surname': donor.surname,
+        'firstName': donor.first_name,
+        'middleName': donor.middle_name,
+        'panNo': donor.pan_no,
+        'email': donor.email,
+        'mobile': donor.mobile,
+        'dofficial': donor.dofficial,
+        'address': donor.address,
+        'city': donor.city,
+        'country': donor.country,
+        'state': donor.state,
+        'pincode': donor.pincode,
+    }
+    return JsonResponse({'success': True, 'donor': donor_data})
+
+def donate_view(request):
+    return render(request, 'donate.html')

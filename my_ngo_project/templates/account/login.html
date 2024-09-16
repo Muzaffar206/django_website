@@ -7,7 +7,7 @@
 
 {% block content %}
 <!-- Login area Start -->
-<div class="login-area section-padding" style="padding: 10px;">
+<div class="login-area section-padding">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10">
@@ -82,14 +82,13 @@
               </p>
             </div>
             {% get_providers as socialaccount_providers %}
-            {% for provider in socialaccount_providers %}
-              {% if provider.id == "google" %}
-                <a href="{% provider_login_url provider.id process='login' scope=scope auth_params=auth_params %}" class="login-btn d-flex align-items-center justify-content-center gap-10">
-                  <img src="{% static 'images/icon/google-icon.png' %}" alt="Google icon" class="m-0">
-                  <span>{% trans "Login with Google" %}</span>
-                </a>
-              {% endif %}
-            {% endfor %}
+            {% if socialaccount_providers %}
+            <a href="{% provider_login_url 'google' %}" class="login-btn d-flex align-items-center justify-content-center gap-10">
+              <img src="{% static 'images/icon/google-icon.png' %}" alt="Google icon" class="m-0">
+              <span>{% trans "Login with Google" %}</span>
+            </a>
+            {% include "socialaccount/snippets/login_extra.html" %}
+            {% endif %}
           </div>
         </div>
       </div>

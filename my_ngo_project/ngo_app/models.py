@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 from django_ckeditor_5.fields import CKEditor5Field
 from urllib.parse import urlparse, parse_qs
+from django.contrib.auth.models import User
 
 def validate_image_size(image):
     if image and (image.width != 1280 or image.height != 720):
@@ -81,3 +82,32 @@ class SchemeData(models.Model):
 
     def __str__(self):
         return "Scheme Data"
+
+class Donor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    surname = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100)
+    middle_name = models.CharField(max_length=100, blank=True)
+    pan_no = models.CharField(max_length=10)
+    email = models.EmailField()
+    mobile = models.CharField(max_length=15)
+    dofficial = models.CharField(max_length=100, blank=True)
+    address = models.TextField()
+    city = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    pincode = models.CharField(max_length=10)
+
+    def __str__(self):
+        return f"{self.first_name} {self.surname}"
+
+class Donation(models.Model):
+    donor = models.ForeignKey(Donor, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    purpose = models.CharField(max_length=200)
+    is_zakat = models.BooleanField(default=False)
+    date = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.donor} - {self.amount} - {self.date}"

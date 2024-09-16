@@ -37,6 +37,8 @@ urlpatterns = [
     path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
     path('volunteer/', views.volunteer, name='volunteer'),
     path('donate/', views.donate, name='donate'),
+    path('donation-success/', views.donation_success, name='donation_success'),
+    path('api/donor-data/', views.donor_data_api, name='donor_data_api'),
 
     path('accounts/login/', views.login, name='account_login'),
     path('accounts/signup/', views.custom_signup_view, name='account_signup'),
