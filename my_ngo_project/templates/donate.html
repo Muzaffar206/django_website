@@ -23,6 +23,7 @@
                             <div class="mb-3">
                                 <label for="emailOrMobile" class="form-label">Enter Email / Mobile To Fill The Data</label>
                                 <input type="text" class="form-control" id="emailOrMobile" name="emailOrMobile">
+                                <p id="alertMessage" style="display: none; color: red;">No donor found with this email or mobile number. Please fill in your details.</p>
                                 <button type="button" class="btn btn-secondary mt-2" id="fillDataBtn">Fill Data</button>
                             </div>
 
@@ -136,18 +137,18 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="first_name" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="firstName" name="first_name" maxlength="100" required>
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="firstName" name="firstName" maxlength="100" required>
                             </div>
                             
                             <div class="mb-3">
-                                <label for="middle_name" class="form-label">Middle Name</label>
-                                <input type="text" class="form-control" id="middleName" name="middle_name" maxlength="100">
+                                <label for="middleName" class="form-label">Middle Name</label>
+                                <input type="text" class="form-control" id="middleName" name="middleName" maxlength="100">
                             </div>
                             
                             <div class="mb-3">
-                                <label for="pan_no" class="form-label">PAN No</label>
-                                <input type="text" class="form-control" id="panNo" name="pan_no" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" title="Enter a valid PAN number">
+                                <label for="panNo" class="form-label">PAN No</label>
+                                <input type="text" class="form-control" id="panNo" name="panNo" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" title="Enter a valid PAN number" required>
                             </div>
 
                             <div class="mb-3">
@@ -205,7 +206,7 @@
                                 <textarea class="form-control" id="notes" name="notes" rows="3" maxlength="1000"></textarea>
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Donate Now</button>
+                            <button id="rzp-button" type="button" class="btn btn-primary mt-3 mb-3">Pay with Razorpay</button>
                         </form>
                     </div>
                 </div>
@@ -246,6 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalAmountSpan = document.getElementById('totalAmount');
     const amountInput = document.getElementById('amount');
     const purposeInput = document.getElementById('purpose');
+    const rzpButton = document.getElementById('rzp-button');
 
     function sanitizeInput(input) {
         return input.replace(/[&<>"']/g, function(m) {
@@ -263,6 +265,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
                      .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
+
     function updateSelectedDonations() {
         let total = 0;
         let html = '';
@@ -340,10 +343,112 @@ document.addEventListener('DOMContentLoaded', function() {
 
     {% if user.is_authenticated %}
     // If user is authenticated, fetch their data automatically
-    fetchDonorData('{{ user.email }}');
+    fetchDonorData('{{ user.email|escapejs }}');
     {% endif %}
-});
-form.addEventListener('submit', function(e) {
+
+    // Load Razorpay script dynamically
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    script.onload = initializeRazorpay;
+    document.body.appendChild(script);
+
+    function initializeRazorpay() {
+        rzpButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!validateForm()) {
+                alert('Please fill in all required fields before proceeding to payment.');
+                return;
+            }
+            const amount = parseFloat(amountInput.value) || 0;
+            
+            // Prepare the form data
+            const formData = new FormData(form);
+            const jsonData = {};
+            for (let [key, value] of formData.entries()) {
+                jsonData[key] = value;
+            }
+            jsonData.amount = amount;
+
+            // Ensure these fields are included even if empty
+            ['firstName', 'middleName', 'panNo'].forEach(field => {
+                if (!jsonData[field]) {
+                    jsonData[field] = '';
+                }
+            });
+
+            console.log('Form data being sent:', jsonData); // Add this line for debugging
+
+            // Send data to server to create Razorpay order
+            fetch('{% url "create_razorpay_order" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.order_id) {
+                    var options = {
+                        "key": "{{ LS6VdH6RC8Rrav }}",
+                        "amount": data.amount,
+                        "currency": data.currency,
+                        "name": "MESCO",
+                        "description": "Donation to MESCO",
+                        "order_id": data.order_id,
+                        "handler": function (response){
+                            // Send the payment details to the server
+                            fetch('{% url "razorpay_callback" %}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRFToken': '{{ csrf_token }}'
+                                },
+                                body: JSON.stringify({
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_signature: response.razorpay_signature
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    window.location.href = '{% url "donation_success" %}';
+                                } else {
+                                    alert('Payment failed: ' + data.message);
+                                    window.location.href = '{% url "donation_failure" %}';
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('An error occurred. Please check the console and try again.');
+                            });
+                        },
+                        "prefill": {
+                            "name": document.getElementById('firstName').value + ' ' + document.getElementById('surname').value,
+                            "email": document.getElementById('email').value,
+                            "contact": document.getElementById('mobile').value
+                        },
+                        "theme": {
+                            "color": "#F37254"
+                        }
+                    };
+                    var rzp = new Razorpay(options);
+                    rzp.open();
+                } else {
+                    alert('Error creating Razorpay order: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please check the console and try again.');
+            });
+        });
+    }
+
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
         if (validateForm()) {
             this.submit();
@@ -389,42 +494,55 @@ form.addEventListener('submit', function(e) {
         return /^[0-9]{10}$/.test(mobile);
     }
 
-function fillFormData(data) {
+function fetchDonorData(identifier) {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    fetch(`/api/donor-data/?identifier=${encodeURIComponent(identifier)}`, {
+        method: 'GET',
+        headers: {
+            'X-CSRFToken': csrfToken,
+            'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            fillFormData(data.donor, data.isAuthenticated);
+            if (!data.isAuthenticated) {
+                showAlert('Donor data loaded. Please enter your PAN number manually for security reasons.');
+            }
+        } else {
+            showAlert('No donor found with this email or mobile number. Please fill in your details.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('An error occurred while fetching donor data. Please try again.');
+    });
+}
+
+function fillFormData(data, isAuthenticated) {
     Object.keys(data).forEach(key => {
         const input = document.getElementById(key);
         if (input) {
-            input.value = data[key];
+            if (key === 'panNo') {
+                if (isAuthenticated && data[key]) {
+                    input.value = data[key];
+                } else {
+                    input.value = '';
+                    input.placeholder = 'Enter PAN number for security reasons';
+                }
+            } else {
+                input.value = data[key] || '';
+            }
         }
     });
 }
 
-function fetchDonorData(identifier) {
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        fetch(`/api/donor-data/?identifier=${encodeURIComponent(identifier)}`, {
-            method: 'GET',
-            headers: {
-                'X-CSRFToken': csrfToken,
-                'Content-Type': 'application/json'
-            },
-            credentials: 'same-origin'
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                fillFormData(data.donor);
-            } else {
-                alert('No donor found with this email or mobile number. Please fill in your details.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while fetching donor data. Please try again.');
-        });
+function showAlert(message) {
+        const alertMessage = document.getElementById('alertMessage');
+        alertMessage.textContent = message;
+        alertMessage.style.display = 'block';
     }
 
 const emailOrMobileInput = document.getElementById('emailOrMobile');
@@ -445,6 +563,7 @@ if (fillDataBtn) {
     {% if user.is_authenticated %}
     fetchDonorData('{{ user.email|escapejs }}');
     {% endif %}
+});
 </script>
 
 {% endblock %}

@@ -32,6 +32,22 @@
           <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
             {% csrf_token %}
             <div class="contact-form mb-24">
+              <label for="id_first_name" class="contact-label">{% trans "First Name" %}</label>
+              <input type="text" name="first_name" class="form-control contact-input {% if form.first_name.errors %}is-invalid{% endif %}" id="id_first_name" placeholder="{% trans 'Enter Your First Name' %}" required>
+              {% if form.first_name.errors %}
+                <div class="invalid-feedback">{{ form.first_name.errors }}</div>
+              {% endif %}
+            </div>
+
+            <!-- Add Last Name field -->
+            <div class="contact-form mb-24">
+              <label for="id_last_name" class="contact-label">{% trans "Last Name" %}</label>
+              <input type="text" name="last_name" class="form-control contact-input {% if form.last_name.errors %}is-invalid{% endif %}" id="id_last_name" placeholder="{% trans 'Enter Your Last Name' %}" required>
+              {% if form.last_name.errors %}
+                <div class="invalid-feedback">{{ form.last_name.errors }}</div>
+              {% endif %}
+            </div>
+            <div class="contact-form mb-24">
               <label for="{{ form.username.id_for_label }}" class="contact-label">{% trans "Username" %}</label>
               <input type="text" name="{{ form.username.html_name }}" class="form-control contact-input {% if form.username.errors %}is-invalid{% endif %}" id="{{ form.username.id_for_label }}" placeholder="{% trans 'Enter Your Username' %}" required>
               {% if form.username.errors %}

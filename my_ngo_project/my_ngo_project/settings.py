@@ -16,6 +16,16 @@ from pathlib import Path
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import Flow
+from django.core.exceptions import ImproperlyConfigured
+
+def get_env_variable(var_name, default=None):
+    try:
+        return os.environ[var_name]
+    except KeyError:
+        if default is not None:
+            return default
+        error_msg = f"Set the {var_name} environment variable"
+        raise ImproperlyConfigured(error_msg)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -49,6 +59,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'payments',
 ]
 
 MIDDLEWARE = [
@@ -165,7 +176,6 @@ CKEDITOR_5_CONFIGS = {
     'default': {
         'toolbar': ['heading', '|', 'bold', 'italic', 'link',
                     'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', ],
-
     },
 }
 
@@ -211,3 +221,26 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 ACCOUNT_PASSWORD_RESET_TIMEOUT = 3600  # 1 hour
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 ACCOUNT_EMAIL_SUBJECT_PREFIX = "Your Site "
+
+# Add these lines
+RAZORPAY_KEY_ID = 'rzp_test_wKKgsnR8GYy8UY'
+RAZORPAY_KEY_SECRET = '2KqH9zQSacJvbm8lVnDomYIi'
+
+import base64
+
+# Use a default value for development
+ENCRYPTION_KEY = "g4M9ipAcE5e_uZkGngaPP01jrbS9TEcCgfZau8G6mwQ="
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}

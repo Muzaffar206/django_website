@@ -9,6 +9,16 @@ from allauth.account.forms import SignupForm, LoginForm
 from allauth.account.views import EmailVerificationSentView
 from django.contrib.auth.decorators import login_required
 from .forms import DonationForm
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.db.models import Q
+from django.contrib.auth.models import User
+
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 def home(request):
     sliders = Slider.objects.all()
@@ -25,7 +35,7 @@ def about(request):
     return render(request, 'about/about.html')
 
 def blog(request):
-    return render(request, 'blog.html')
+    return render(request, 'blog/blog.html')
 
 def about_glance(request):
     return render(request, 'about/mesco_at_glance.html')
@@ -135,41 +145,53 @@ def donate(request):
         form = DonationForm(request.POST)
         if form.is_valid():
             try:
-                email = form.cleaned_data['email']
-                mobile = form.cleaned_data['mobile']
-                
-                donor, created = Donor.objects.update_or_create(
-                    email=email,
-                    mobile=mobile,
-                    defaults={
-                        'surname': form.cleaned_data['surname'],
-                        'first_name': form.cleaned_data['first_name'],
-                        'middle_name': form.cleaned_data['middle_name'],
-                        'pan_no': form.cleaned_data['pan_no'],
-                        'dofficial': form.cleaned_data['dofficial'],
-                        'address': form.cleaned_data['address'],
-                        'city': form.cleaned_data['city'],
-                        'country': form.cleaned_data['country'],
-                        'state': form.cleaned_data['state'],
-                        'pincode': form.cleaned_data['pincode'],
-                    }
+                # Create donor
+                donor = Donor.objects.create(
+                    surname=form.cleaned_data['surname'],
+                    first_name=form.cleaned_data['first_name'],
+                    middle_name=form.cleaned_data['middle_name'],
+                    pan_no=form.cleaned_data['pan_no'],
+                    email=form.cleaned_data['email'],
+                    mobile=form.cleaned_data['mobile'],
+                    dofficial=form.cleaned_data['dofficial'],
+                    address=form.cleaned_data['address'],
+                    city=form.cleaned_data['city'],
+                    country=form.cleaned_data['country'],
+                    state=form.cleaned_data['state'],
+                    pincode=form.cleaned_data['pincode'],
                 )
-                
-                if request.user.is_authenticated and not donor.user:
-                    donor.user = request.user
-                    donor.save()
-                
+
+                # Create donation
                 donation = Donation.objects.create(
                     donor=donor,
                     amount=form.cleaned_data['amount'],
                     purpose=form.cleaned_data['purpose'],
-                    is_zakat=form.cleaned_data['is_zakat'],
-                    notes=form.cleaned_data['notes']
+                    is_zakat=request.POST.get('is_zakat') == 'Yes',
+                    notes=form.cleaned_data['notes'],
                 )
-                messages.success(request, 'Thank you for your donation!')
-                return redirect('donation_success')
+
+                # Create Razorpay Order
+                razorpay_order = razorpay_client.order.create(dict(
+                    amount=int(donation.amount * 100),
+                    currency='INR',
+                    payment_capture='0'
+                ))
+
+                # Update donation with Razorpay order_id
+                donation.razorpay_order_id = razorpay_order['id']
+                donation.save()
+
+                context = {
+                    'form': form,
+                    'razorpay_order_id': razorpay_order['id'],
+                    'razorpay_merchant_key': settings.RAZORPAY_KEY_ID,
+                    'razorpay_amount': int(donation.amount * 100),
+                    'currency': 'INR',
+                    'callback_url': 'http://' + request.get_host() + '/razorpay-callback/'
+                }
+                return render(request, 'donate.html', context)
             except Exception as e:
-                print(f"Error saving donation: {str(e)}")
+                print(f"Error processing donation: {str(e)}")
                 messages.error(request, 'An error occurred while processing your donation. Please try again.')
         else:
             print(form.errors)
@@ -179,10 +201,19 @@ def donate(request):
     else:
         form = DonationForm()
     
-    return render(request, 'donate.html', {'form': form})
+    context = {
+        'form': form,
+        'razorpay_merchant_key': settings.RAZORPAY_KEY_ID,
+    }
+    return render(request, 'donate.html', context)
+
+
 
 def donation_success(request):
     return render(request, 'donation_success.html')
+
+def donation_failure(request):
+    return render(request, 'donation_failure.html')
 
 class CustomSignupView(SignupView):
     def form_valid(self, form):
@@ -259,32 +290,38 @@ class CustomConfirmEmailView(EmailVerificationSentView):
 
 from django.http import JsonResponse
 from .models import Donor
+from django.db.models import Q
 
 def donor_data_api(request):
     identifier = request.GET.get('identifier')
-    try:
-        donor = Donor.objects.get(email=identifier)
-    except Donor.DoesNotExist:
-        try:
-            donor = Donor.objects.get(mobile=identifier)
-        except Donor.DoesNotExist:
-            return JsonResponse({'success': False})
+    donor = Donor.objects.filter(Q(email=identifier) | Q(mobile=identifier)).first()
     
-    donor_data = {
-        'surname': donor.surname,
-        'firstName': donor.first_name,
-        'middleName': donor.middle_name,
-        'panNo': donor.pan_no,
-        'email': donor.email,
-        'mobile': donor.mobile,
-        'dofficial': donor.dofficial,
-        'address': donor.address,
-        'city': donor.city,
-        'country': donor.country,
-        'state': donor.state,
-        'pincode': donor.pincode,
-    }
-    return JsonResponse({'success': True, 'donor': donor_data})
+    if donor:
+        return JsonResponse({
+            'success': True,
+            'donor': {
+                'surname': donor.surname,
+                'firstName': donor.first_name,
+                'middleName': donor.middle_name,
+                'panNo': donor.pan_no if request.user.is_authenticated else None,
+                'email': donor.email,
+                'mobile': donor.mobile,
+                'dofficial': donor.dofficial,
+                'address': donor.address,
+                'city': donor.city,
+                'country': donor.country,
+                'state': donor.state,
+                'pincode': donor.pincode
+            },
+            'isAuthenticated': request.user.is_authenticated
+        })
+    else:
+        return JsonResponse({'success': False})
 
 def donate_view(request):
     return render(request, 'donate.html')
+
+@login_required
+def user_donations(request):
+    donations = Donation.objects.filter(donor__user=request.user).order_by('-created_at')
+    return render(request, 'user_donations.html', {'donations': donations})

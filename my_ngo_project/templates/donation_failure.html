@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Donation Successful | MESCO{% endblock %}
+
+{% block content %}
+{% include 'breadcrumb.html' %}
+
+<div class="donation-success section-padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card-style box-shadow border-0">
+                    <div class="card-body text-center">
+                        <i class="ri-check-line success-icon"></i>
+                        <h2 class="title text-capitalize font-600 mb-4">Donation Fail!</h2>
+                        <h1 class="mb-4">Faill</h1>
+                        <a href="{% url 'home' %}" class="btn btn-primary">Return to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

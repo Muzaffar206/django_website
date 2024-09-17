@@ -5,6 +5,65 @@ from django.utils.text import slugify
 from django_ckeditor_5.fields import CKEditor5Field
 from urllib.parse import urlparse, parse_qs
 from django.contrib.auth.models import User
+from django.utils import timezone
+from cryptography.fernet import Fernet
+from django.conf import settings
+import base64
+import logging
+logger = logging.getLogger(__name__)
+
+# Generate a key and store it securely (e.g., in environment variables)
+# You should run this once and save the key securely
+# ENCRYPTION_KEY = Fernet.generate_key()
+# print(ENCRYPTION_KEY.decode())  # Save this key securely!
+
+# In your Django settings.py:
+# ENCRYPTION_KEY = 'your-securely-stored-key'
+
+class EncryptedField(models.TextField):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def from_db_value(self, value, expression, connection):
+        if value is None:
+            return value
+        return self.decrypt(value)
+
+    def to_python(self, value):
+        if isinstance(value, str):
+            return self.decrypt(value)
+        return value
+
+    def get_prep_value(self, value):
+        if value is None:
+            return value
+        encrypted = self.encrypt(value)
+        if encrypted is None:
+            logger.error(f"Encryption failed for value: {value[:4]}...")
+            return None
+        return encrypted
+    
+    @staticmethod
+    def encrypt(txt):
+        try:
+            txt = str(txt).encode('utf-8')
+            cipher_suite = Fernet(settings.ENCRYPTION_KEY.encode())
+            encrypted_text = cipher_suite.encrypt(txt)
+            return base64.b64encode(encrypted_text).decode('ascii')
+        except Exception as e:
+            logger.error(f"Encryption error: {e}")
+            return None
+
+    @staticmethod
+    def decrypt(txt):
+        try:
+            txt = base64.b64decode(txt)
+            cipher_suite = Fernet(settings.ENCRYPTION_KEY.encode())
+            decoded_text = cipher_suite.decrypt(txt).decode('utf-8')
+            return decoded_text
+        except Exception as e:
+            logger.error(f"Decryption error: {e}")
+            return None
 
 def validate_image_size(image):
     if image and (image.width != 1280 or image.height != 720):
@@ -88,26 +147,37 @@ class Donor(models.Model):
     surname = models.CharField(max_length=100)
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, blank=True)
-    pan_no = models.CharField(max_length=10)
+    pan_no = EncryptedField(blank=True, null=True)  # Now using EncryptedField
     email = models.EmailField()
     mobile = models.CharField(max_length=15)
     dofficial = models.CharField(max_length=100, blank=True)
-    address = models.TextField()
-    city = models.CharField(max_length=100)
-    country = models.CharField(max_length=100)
-    state = models.CharField(max_length=100)
-    pincode = models.CharField(max_length=10)
+    address = models.TextField(blank=True)
+    city = models.CharField(max_length=100, blank=True)
+    country = models.CharField(max_length=100, blank=True)
+    state = models.CharField(max_length=100, blank=True)
+    pincode = models.CharField(max_length=10, blank=True)
 
     def __str__(self):
         return f"{self.first_name} {self.surname}"
 
+    def save(self, *args, **kwargs):
+        logger.info(f"Saving Donor with PAN: {self.pan_no[:4] if self.pan_no else 'None'}...")
+        super().save(*args, **kwargs)
+
 class Donation(models.Model):
     donor = models.ForeignKey(Donor, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    purpose = models.CharField(max_length=200)
+    purpose = models.CharField(max_length=255)
     is_zakat = models.BooleanField(default=False)
-    date = models.DateTimeField(auto_now_add=True)
     notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    paid = models.BooleanField(default=False)
+    razorpay_order_id = models.CharField(max_length=100, unique=True, blank=True, null=True)
+    razorpay_payment_id = EncryptedField(blank=True, null=True)  # Now using EncryptedField
 
     def __str__(self):
-        return f"{self.donor} - {self.amount} - {self.date}"
+        return f"Donation of {self.amount} by {self.donor}"
+
+    def save(self, *args, **kwargs):
+        logger.info(f"Saving Donation with Payment ID: {self.razorpay_payment_id[:4] if self.razorpay_payment_id else 'None'}...")
+        super().save(*args, **kwargs)
