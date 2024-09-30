@@ -29,7 +29,6 @@ urlpatterns = [
     path('media/annual-reports/', views.annual_reports, name='annual_reports'),
     path('media/success-stories/', views.success_stories, name='success_stories'),
     path('media/donor-testimonials/', views.donor_testimonials, name='donor_testimonials'),
-    path('blog/', views.blog, name='blog'),
 
     path('contact/', views.contact, name='contact'),
     path('faq/', views.faq, name='faq'),

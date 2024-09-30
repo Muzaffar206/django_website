@@ -25646,13 +25646,12 @@ selectPricing {
 
 .blog-info-title h4 {
   color: #00715d;
-  font-size: 28px; /* Increased font size */
+  font-size: 28px; 
   font-weight: 700;
-  margin-bottom: 20px; /* Increased margin */
+  margin-bottom: 20px; 
   text-transform: uppercase;
-  border-bottom: 3px solid #00715d; /* Thicker underline */
-  padding-bottom: 15px;
-  text-align: center; /* Center the title */
+  padding-bottom: 5px;
+  text-align: center; 
 }
 
 .priceListing .listing {
@@ -25747,4 +25746,53 @@ selectPricing {
 #otherAmount {
   width: 120px;
   margin-left: 10px;
+}
+
+.social-share {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.share-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  margin-right: 10px;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.share-icon:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.share-icon.facebook { background-color: #3b5998; }
+.share-icon.whatsapp { background-color: #25D366; }
+.share-icon.email { background-color: #D44638; }
+.share-icon.pinterest { background-color: #bd081c; }
+.share-icon.link { background-color: #333; border: none; cursor: pointer; }
+
+.share-icon i {
+  font-size: 16px;
+}
+
+.django-ckeditor-widget {
+  width: 100% !important;
+  max-width: 800px !important;
+}
+
+.cke_chrome {
+  width: 100% !important;
+  max-width: 800px !important;
+}
+
+.cke_contents {
+  min-height: 400px !important;
 }

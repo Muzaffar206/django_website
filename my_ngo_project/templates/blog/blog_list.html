@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Blog | MESCO{% endblock %}
+
+{% block content %}
+{% include 'breadcrumb.html' %}
+
+<section class="blog-section-three top-bottom-padding">
+    <div class="container">
+        <div class="row gy-24">
+            {% for post in page_obj %}
+            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 view-wrapper">
+                <div class="single-blog h-calc">
+                    <div class="blog-img">
+                        <a href="{{ post.get_absolute_url }}">
+                            <div class="image-container">
+                                <img src="{% if post.featured_image %}{{ post.featured_image.url }}{% else %}{% static 'images/gallery/blog-default.png' %}{% endif %}"
+                                    class="img-fluid w-100" alt="{{ post.title }}" title="{{ post.title }}" />
+                            </div>
+                        </a>
+                        <div class="brush-bg">
+                            <img src="{% static 'images/gallery/brush.png' %}" alt="image" />
+                        </div>
+                    </div>
+                    <div class="blog-info">
+                        <div class="blog-info-title">
+                            <div class="d-flex mb-15 gap-16 align-items-center">
+                                <div class="user d-flex gap-10 align-items-center">
+                                    <i class="ri-user-line"></i>
+                                    <p class="info mb-0">By: {{ post.author.get_full_name }}</p>
+                                </div>
+                                <div class="donate d-flex gap-10 align-items-center">
+                                    <i class="ri-calendar-line"></i>
+                                    <p class="info mb-0">{{ post.created_at|date:"F d, Y" }}</p>
+                                </div>
+                            </div>
+                            <h4 class="title text-capitalize text-start">
+                                <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                            </h4>
+                            <p class="subtitle">
+                                {{ post.meta_description|default:post.content|striptags|truncatewords:20 }}
+                            </p>
+                            <div class="tags">
+                                {% for tag in post.tags.all %}
+                                <a href="{% url 'tagged_posts' tag.slug %}" class="badge bg-secondary">{{ tag.name }}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-share">
+                        <h5>Share : -</h5>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ post.absolute_url }}" target="_blank" class="share-icon facebook" title="Share on Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://api.whatsapp.com/send?text={{ post.absolute_url }}" target="_blank" class="share-icon whatsapp" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="mailto:?subject={{ post.title }}&body={{ post.absolute_url }}" class="share-icon email" title="Share via Email"><i class="fas fa-envelope"></i></a>
+                        <a href="https://pinterest.com/pin/create/button/?url={{ post.absolute_url }}" target="_blank" class="share-icon pinterest" title="Pin on Pinterest"><i class="fab fa-pinterest-p"></i></a>
+                        <button class="share-icon link" onclick="copyLink('{{ post.absolute_url }}')" title="Copy Link"><i class="fas fa-link"></i></button>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p>No blog posts available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% include 'blog/pagination.html' with page=page_obj %}
+    </div>
+</section>
+
+<script>
+function copyLink(link) {
+    navigator.clipboard.writeText(link).then(function() {
+        alert('Link copied to clipboard');
+    }, function(err) {
+        console.error('Could not copy text: ', err);
+    });
+}
+</script>
+
+{% block extra_css %}
+<style>
+    .image-container {
+        width: 100%;
+        height: 256px;
+        overflow: hidden;
+        position: relative;
+    }
+    .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+    .blog-info-title .info {
+        margin-bottom: 0;
+    }
+    .blog-info-title .title {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .blog-info-title .subtitle {
+        margin-bottom: 10px;
+    }
+    .tags {
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock %}
+{% endblock %}

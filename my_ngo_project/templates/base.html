@@ -8,6 +8,7 @@
     <meta name="keywords" content="{% block meta_keywords %}ngo, charity, non-profit{% endblock %}">
     {% load static %}
     <link rel="icon" type="image/x-icon" sizes="20x20" href="{% static '/images/icon/favicon.png' %}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="{% static '/css/bootstrap-5.3.0.min.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static '/css/remixicon.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static '/css/plugin.css' %}" />
@@ -117,6 +118,7 @@
                               <li class="single-list"><a href="{% url 'faq' %}" class="single">FAQs</a></li>
                               <li class="single-list"><a href="{% url 'privacy_policy' %}" class="single">Privacy Policy</a></li>
                               <li class="single-list"><a href="{% url 'terms_conditions' %}" class="single">Terms & Conditions</a></li>
+                              <li class="single-list"><a href="{% url 'blog_list' %}" class="single">Blog</a></li>
                             </ul>
                           </li>
                           <li class="single-list"><a href="{% url 'contact' %}" class="single {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a></li>
@@ -196,7 +198,7 @@
                                         <li class="single-list"><a href="{% url 'home' %}" class="single">Home</a></li>
                                         <li class="single-list"><a href="{% url 'donate' %}" class="single">Donate</a></li>
                                         <li class="single-list"><a href="{% url 'about' %}" class="single">About</a></li>
-                                        <li class="single-list"><a href="{% url 'blog' %}" class="single">Blog</a></li>
+                                        <li class="single-list"><a href="{% url 'blog_list' %}" class="single">Blog</a></li>
                                         <li class="single-list"><a href="{% url 'contact' %}" class="single">Contact</a></li>
                                     </ul>
                                 </nav>

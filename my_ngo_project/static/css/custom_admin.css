@@ -1,0 +1,51 @@
+/* Table of Contents styling */
+.ck-content .table-of-contents {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.ck-content .table-of-contents ol {
+    padding-left: 20px;
+}
+
+.ck-content .table-of-contents li {
+    margin-bottom: 5px;
+}
+
+/* Blockquote styling */
+.ck-content blockquote {
+    border: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.ck-content .quote-with-text {
+    display: flex;
+    align-items: flex-start;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.ck-content .quote {
+    flex-shrink: 0;
+    margin-right: 20px;
+}
+
+.ck-content .quote svg {
+    width: 50px;
+    height: auto;
+}
+
+.ck-content blockquote h4.title {
+    font-size: 18px;
+    line-height: 1.5;
+    margin: 0;
+    font-style: italic;
+    color: #333;
+}
+
+/* Image cropping styles */
+.cropping-image-wrap {
+    max-width: 670px;
+}

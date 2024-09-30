@@ -1,0 +1,357 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ post.meta_title|default:post.title }} | MESCO{% endblock %}
+
+{% block meta_description %}{{ post.meta_description }}{% endblock %}
+{% block meta_keywords %}{{ post.meta_keywords }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+<style>
+    .image-container {
+        width: 100%;
+        padding-top: 69.19%; /* 370:256 aspect ratio */
+        position: relative;
+        overflow: hidden;
+    }
+    .image-container img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .related-blog-slider .slick-prev,
+    .related-blog-slider .slick-next {
+        z-index: 1;
+    }
+    .related-blog-slider .slick-prev {
+        left: 10px;
+    }
+    .related-blog-slider .slick-next {
+        right: 10px;
+    }
+    .related-blog-slider .slick-list {
+        margin: 0 -10px;
+    }
+    .related-blog-slider .slick-slide {
+        margin: 0 10px;
+    }
+    .blog-info-title h4 {
+        text-align: left;
+    }
+    .post-content img {
+        max-width: 100%;
+        height: auto;
+    }
+    .post-content .image-style-align-left {
+        float: left;
+        margin-right: 20px;
+        margin-bottom: 20px;
+    }
+    .post-content .image-style-align-right {
+        float: right;
+        margin-left: 20px;
+        margin-bottom: 20px;
+    }
+    .post-content .image-style-align-center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .post-content figure {
+        margin: 0;
+        display: table;
+    }
+    .post-content figure img {
+        width: 100%;
+    }
+    .post-content figure.image-style-align-left {
+        float: left;
+        margin-right: 20px;
+    }
+    .post-content figure.image-style-align-right {
+        float: right;
+        margin-left: 20px;
+    }
+    .post-content figure.image-style-align-center {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .post-content figcaption {
+        caption-side: bottom;
+        display: table-caption;
+        text-align: center;
+        color: #999;
+        font-size: 0.9em;
+        margin-top: 5px;
+    }
+    .post-content::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% include 'breadcrumb.html' %}
+
+<!-- Blog-details Start -->
+<section class="blog-details top-bottom-padding2">
+    <div class="container">
+        <div class="row gy-24">
+            <div class="col-xxl-9 col-xl-8 col-lg-8">
+                <div class="single-blog">
+                    <div class="blog-img">
+                        {% if post.featured_image %}
+                            <img src="{{ post.featured_image.url }}" class="img-fluid w-100" alt="{{ post.title }}">
+                        {% endif %}
+                        <div class="brush-bg">
+                            <img src="{% static 'images/gallery/brush-bg-two.png' %}" alt="brush background">
+                        </div>
+                    </div>
+                    <div class="blog-info">
+                        <div class="blog-info-title">
+                            <div class="flex gap-16 mb-20 align-items-center">
+                                <div class="user flex gap-10 align-items-center">
+                                    <i class="ri-user-line"></i>
+                                    <p class="info">By: {{ post.author.get_full_name }}</p>
+                                </div>
+                                <div class="donate flex gap-10 align-items-center">
+                                    <i class="ri-calendar-line"></i>
+                                    <p class="info">{{ post.created_at|date:"F d, Y" }}</p>
+                                </div>
+                            </div>
+                            <h1 class="title">{{ post.title }}</h1>
+                            <div class="post-content">
+                                {{ post.content|safe }}
+                            </div>
+                            <div class="divider"></div>
+                        </div>
+                        <!-- blog info -->
+                        <div class="another-blog-info">
+                            <div class="d-flex res-flex justify-content-between align-items-center">
+                                <div class="imp-btn flex align-items-center">
+                                    {% for tag in post.tags.all %}
+                                        <div class="badge {% if forloop.first %}active{% endif %}">
+                                            <a href="{% url 'tagged_posts' tag.slug %}">{{ tag.name }}</a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="share-link align-items-center">
+                                    <p class="title">share:</p>
+                                    <div class="social-link">
+                                        <div class="social-icon active">
+                                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ post.absolute_url }}" target="_blank"><i class="ri-facebook-fill"></i></a>
+                                        </div>
+                                        <div class="social-icon">
+                                            <a href="https://twitter.com/intent/tweet?url={{ post.absolute_url }}" target="_blank"><i class="ri-twitter-fill"></i></a>
+                                        </div>
+                                        <div class="social-icon">
+                                            <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ post.absolute_url }}" target="_blank"><i class="ri-linkedin-fill"></i></a>
+                                        </div>
+                                        <div class="social-icon">
+                                            <a href="https://www.instagram.com/" target="_blank"><i class="ri-instagram-fill"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Related Blog -->
+                        <div class="related-blog">
+                            <h3 class="mb-4">Related Posts</h3>
+                            <div class="related-blog-slider">
+                                {% for related_post in related_posts %}
+                                <div class="single-blog h-calc px-2">
+                                    <div class="blog-img">
+                                        <a href="{{ related_post.get_absolute_url }}">
+                                            <div class="image-container">
+                                                <img src="{{ related_post.featured_image.url }}" class="img-fluid w-100" alt="{{ related_post.title }}">
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="blog-info">
+                                        <div class="blog-info-title">
+                                            <div class="flex gap-16 mb-16 align-items-center">
+                                                <div class="user flex gap-10 align-items-center">
+                                                    <i class="ri-user-line"></i>
+                                                    <p class="info">By: {{ related_post.author.get_full_name }}</p>
+                                                </div>
+                                                <div class="donate flex gap-10 align-items-center">
+                                                    <i class="ri-calendar-line"></i>
+                                                    <p class="info">{{ related_post.created_at|date:"F d, Y" }}</p>
+                                                </div>
+                                            </div>
+                                            <h4 class="title text-capitalize"><a href="{{ related_post.get_absolute_url }}">{{ related_post.title }}</a></h4>
+                                            <p class="subtitle">{{ related_post.content|striptags|truncatewords:30 }}</p>
+                                            <div class="button-section">
+                                                <a href="{{ related_post.get_absolute_url }}" class="btn-primary-fill pill-btn">Read More</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xxl-3 col-xl-4 col-lg-4">
+                <div class="right-element sticky-sidebar">
+                    <!-- Search Box -->
+                    <div class="search-section">
+                        <p class="pera">Search Here</p>
+                        <div class="dotted">
+                            <div class="active-dot"></div>
+                            <div class="inactive-dot"></div>
+                        </div>
+                        <div class="search-box">
+                            <form action="{% url 'blog_search' %}" method="get">
+                                <input type="search" name="q" class="search-input" placeholder="Enter Your Keyword">
+                                <button type="submit" class="search-icon">
+                                    <i class="ri-search-line"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- category -->
+                    <div class="category-section">
+                        <p class="pera">Category List</p>
+                        <div class="dotted">
+                            <div class="active-dot"></div>
+                            <div class="inactive-dot"></div>
+                        </div>
+                        <div class="category-box">
+                            <ul class="listing">
+                                {% for category in categories %}
+                                <li class="single-list {% if category == post.category %}active{% endif %}">
+                                    <a class="single" href="{% url 'category_posts' category.slug %}">{{ category.name }}</a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Related post -->
+                    <div class="related-post-section">
+                        <p class="pera text-capitalize">Related post</p>
+                        <div class="dotted">
+                            <div class="active-dot"></div>
+                            <div class="inactive-dot"></div>
+                        </div>
+                        <div class="related-box">
+                            {% for related_post in related_posts|slice:":4" %}
+                            <div class="single-post">
+                                <div class="post-img">
+                                    <a href="{{ related_post.get_absolute_url }}"><img src="{{ related_post.featured_image.url }}" alt="{{ related_post.title }}"></a>
+                                </div>
+                                <div class="post-info">
+                                    <div class="date-time">
+                                        <i class="ri-time-line"></i>
+                                        <p class="pera">{{ related_post.created_at|date:"F d, Y" }}</p>
+                                    </div>
+                                    <h4 class="title"><a href="{{ related_post.get_absolute_url }}">{{ related_post.title }}</a></h4>
+                                </div>
+                            </div>
+                            {% if not forloop.last %}<div class="divider"></div>{% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Tag -->
+                    <div class="tag-section">
+                        <p class="pera">Tags</p>
+                        <div class="dotted">
+                            <div class="active-dot"></div>
+                            <div class="inactive-dot"></div>
+                        </div>
+                        <div class="tag-box">
+                            <div class="tag-info">
+                                {% for tag in post.tags.all %}
+                                <div class="badge {% if forloop.first %}active{% endif %}">
+                                    <p class="subtitle">{{ tag.name }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Box -->
+                    <div class="user-box">
+                        <div class="user-img mx-auto">
+                            <img src="{{ post.author.profile.avatar.url }}" alt="{{ post.author.get_full_name }}">
+                        </div>
+                        <div class="user-info text-center">
+                            <h4 class="title">{{ post.author.get_full_name }}</h4>
+                            <p class="pera">{{ post.author.profile.bio }}</p>
+                        </div>
+                        <div class="social-link justify-content-center">
+                            {% if post.author.profile.facebook_url %}
+                            <div class="social-icon active">
+                                <a href="{{ post.author.profile.facebook_url }}" target="_blank"><i class="ri-facebook-fill"></i></a>
+                            </div>
+                            {% endif %}
+                            {% if post.author.profile.twitter_url %}
+                            <div class="social-icon">
+                                <a href="{{ post.author.profile.twitter_url }}" target="_blank"><i class="ri-twitter-fill"></i></a>
+                            </div>
+                            {% endif %}
+                            {% if post.author.profile.linkedin_url %}
+                            <div class="social-icon">
+                                <a href="{{ post.author.profile.linkedin_url }}" target="_blank"><i class="ri-linkedin-fill"></i></a>
+                            </div>
+                            {% endif %}
+                            {% if post.author.profile.instagram_url %}
+                            <div class="social-icon">
+                                <a href="{{ post.author.profile.instagram_url }}" target="_blank"><i class="ri-instagram-fill"></i></a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Blog-details End -->
+{% endblock %}
+
+
+{% block extra_js %}
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.related-blog-slider').slick({
+            dots: true,
+            infinite: true,
+            speed: 300,
+            slidesToShow: 3,
+            slidesToScroll: 1,
+            responsive: [
+                {
+                    breakpoint: 1024,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 1,
+                        infinite: true,
+                        dots: true
+                    }
+                },
+                {
+                    breakpoint: 600,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1
+                    }
+                }
+            ]
+        });
+    });
+</script>
+{% endblock %}

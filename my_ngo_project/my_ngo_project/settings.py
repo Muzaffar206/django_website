@@ -60,6 +60,10 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'payments',
+    'blog',
+    'taggit',
+    'tinymce',
+    'easy_thumbnails',
 ]
 
 MIDDLEWARE = [
@@ -144,8 +148,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -159,9 +167,11 @@ CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',
         'height': 300,
-        'width': 800,
+        'width': '100%',
     },
 }
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
 
 SITE_ID = 1
 ACCOUNT_EMAIL_REQUIRED = True
@@ -173,10 +183,54 @@ SOCIALACCOUNT_ADAPTER = 'ngo_app.adapters.CustomSocialAccountAdapter'
 
 # CKEditor 5 settings
 CKEDITOR_5_CONFIGS = {
-    'default': {
-        'toolbar': ['heading', '|', 'bold', 'italic', 'link',
-                    'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', ],
-    },
+    'extends': {
+        'toolbar': [
+            'heading', '|', 'bold', 'italic', 'link', 'underline', 'strikethrough',
+            'highlight', '|',
+            'bulletedList', 'numberedList', 'todoList', '|', '|', 'fontFamily', 'fontSize', 'color',
+            'backgroundColor', '|', 'alignment', 'direction',
+            'horizontalLine', '|', 'insertImage', 'blockQuote', 'insertSnippet',
+            'pageBreak', '|', 'specialCharacters',
+            'horizontalLine', 'emoji', '|', 'undo', 'redo',
+            '|', 'sourceEditing', 'tableOfContents'
+        ],
+        'image': {
+            'toolbar': [
+                'imageTextAlternative', '|',
+                'imageStyle:inline',
+                'imageStyle:block',
+                'imageStyle:side',
+                'imageStyle:alignLeft',
+                'imageStyle:alignCenter',
+                'imageStyle:alignRight',
+                '|',
+                'toggleImageCaption',
+                'imageTextAlternative'
+            ],
+            'styles': [
+                'full',
+                'side',
+                'alignLeft',
+                'alignCenter',
+                'alignRight'
+            ],
+        },
+        'tableOfContents': {
+            'contentSelector': 'main',
+            'headingSelector': 'h2, h3, h4',
+            'title': 'Table of contents'
+        },
+        'language': 'en',
+        'image': {
+            'upload': {
+                'types': ['png', 'jpeg', 'jpg', 'gif'],
+            },
+            'resizeUnit': 'px',
+        },
+        'simpleUpload': {
+            'uploadUrl': '/ckeditor5/image_upload/',
+        },
+    }
 }
 
 # Media files configuration for CKEditor 5
